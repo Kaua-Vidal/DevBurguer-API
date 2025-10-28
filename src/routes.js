@@ -1,21 +1,15 @@
+/**
+ * POST -> Criar
+ * PUT(+1 dado)/PATCH (1 dado) -> Atualizar
+ * GET -> Buscar
+ * DELETE -> Deletar
+ */
+
 import { Router } from "express";
-import User from "./app/models/User.js";
-import { v4 } from "uuid";
+import UserController from "./app/controllers/UserController.js";
 
 const routes = new Router();
 
-routes.get('/', async (req, res) => {
-
-    const user = {
-        id: v4(),
-        name: 'Henrique',
-        email: 'henrique@email.com',
-        password_hash: '122324',
-        admin: false
-    };
-    await User.create(user);
-
-    res.status(201).json(user)
-})
+routes.post('/users', UserController.store)
 
 export default routes;
