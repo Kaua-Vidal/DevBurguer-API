@@ -32,6 +32,7 @@ class ProductController {
         const products = await Product.findAll()
 
 
+
         return response.status(200).json(products)
     }
 }
