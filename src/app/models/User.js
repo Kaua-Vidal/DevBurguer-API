@@ -1,7 +1,7 @@
 import Sequelize, { Model } from "sequelize";
 
 
-// Class Model (Dentro do sequelize)
+// Class Model (vem de dentro do sequelize)
 class User extends Model {
     //Usa-se static para não precisar instanciar para usar o metodo
     static init (sequelize) {
