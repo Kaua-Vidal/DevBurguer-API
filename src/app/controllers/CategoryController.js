@@ -13,6 +13,8 @@ class CategoryController {
             return response.status(400).json({error: err.errors});
         }
 
+
+
         const { name } = request.body
 
         const existingCategory = await Category.findOne({
@@ -22,7 +24,7 @@ class CategoryController {
         })
 
         if(existingCategory) {
-            return responde.status(400).json({error: 'Category already exists'})
+            return response.status(400).json({error: 'Category already exists'})
         }
 
         const newCategory = await Category.create({
