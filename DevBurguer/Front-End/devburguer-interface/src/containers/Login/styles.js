@@ -56,7 +56,8 @@ export const Title = styled.h2`
     color: #fff;
 
     span {
-        color: #7e3491ff
+        color: #7e3491ff;
+        font-family: "Road Rage", sans-serif;
     }
 `;
 
@@ -88,11 +89,17 @@ export const InputContainer = styled.div`
         font-weight: 600;
         color: #fff;
     }
+
+    p {
+        font-size: 14px;
+        line-height: 80%;
+        color: #cf3057;
+        font-weight: 600;
+        height: 10px;
+    }
 `;
 
 export const Link = styled.a`
 
 `;
 
-export const Button = styled.button`
-`;
