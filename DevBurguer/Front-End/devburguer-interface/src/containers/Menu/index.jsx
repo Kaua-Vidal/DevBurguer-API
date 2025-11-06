@@ -9,8 +9,9 @@ export function Menu() {
             HAMBURGUER
             <br />
             ESTÁ AQUI
+            <span>Esse cardápio está irresistível!</span>
         </h1>
-        <span>Esse cardápio está irresistível!</span>
+        
       </Banner>
     <CategoryMenu>
 
