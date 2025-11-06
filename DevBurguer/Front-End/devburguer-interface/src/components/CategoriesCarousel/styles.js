@@ -3,9 +3,23 @@ import styled from "styled-components";
 export const Container = styled.div `
     .carousel-item {
         padding-right: 40px;
+        
     }
 
+    .react-multiple-carousel__arrow--left {
+        left: 15px;
+        top: 10px;
+    }
+
+    .react-multiple-carousel__arrow--right {
+        top: 10px;
+    }
+
+
+    cursor: grab;
     padding-left: 40px;
+
+    
 `
 export const Title = styled.h2 `
     font-size: 32px;
@@ -39,6 +53,7 @@ export const ContainerItems = styled.div `
     padding: 20px 10px;
     width: 100%;
     height: 250px;
+    transition: all 300ms ease;
 
     p {
         color: #fff;
@@ -48,6 +63,10 @@ export const ContainerItems = styled.div `
         font-size: 22.5px;
         font-weight: bold;
         margin-top: 50px
+    }
+
+    &:hover {
+        transform: scale(1.04)
     }
 
 `
