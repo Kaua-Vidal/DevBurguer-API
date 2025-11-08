@@ -15,9 +15,11 @@ import {
 import Logo from '../../assets/logo.svg';
 import { Button } from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../hooks/UserContext';
 
 export function Login() {
   const navigate = useNavigate();
+  const { putUserData } = useUser()
 
   const schema = yup
     .object({
@@ -42,7 +44,7 @@ export function Login() {
 
   const onSubmit = async (data) => {
     const {
-      data: { token },
+      data: userData
     } = await toast.promise(
       api.post('/sessions', {
         email: data.email,
@@ -62,7 +64,8 @@ export function Login() {
       },
     );
 
-    localStorage.setItem('token', token)
+
+    putUserData(userData);
   };
 
   return (
