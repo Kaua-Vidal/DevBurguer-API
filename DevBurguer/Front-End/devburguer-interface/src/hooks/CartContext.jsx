@@ -89,7 +89,8 @@ useEffect( () => {
             putProductInCart, 
             clearCart, 
             increaseProduct, 
-            decreaseProduct}}>
+            decreaseProduct,
+            deleteProduct}}>
         {children}
     </CartContext.Provider>
 
