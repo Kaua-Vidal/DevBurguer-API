@@ -1,7 +1,17 @@
+import Logo from '../../assets/logo.svg'
+import { Banner, CartItems, CartResume, Container, Content, Title } from './styles'
+
 export function Cart() {
     return (
-        <div>
-            <h1>Carrinho</h1>
-        </div>
+        <Container>
+            <Banner>
+                <img src={Logo} alt="logo-devburguer" />
+            </Banner>
+            <Title> Checkout - Pedido</Title>
+            <Content>
+                <CartItems/>
+                <CartResume/>
+            </Content>
+        </Container>
     )
 }
