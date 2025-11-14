@@ -54,9 +54,8 @@ export default function CheckoutForm() {
 
         if (status === 200 || status === 201) {
           setTimeout(() => {
-            navigate('/complete'),
-              clearCart();
-          }, 2000);
+            navigate(`/complete?payment_intent_client_secret=${paymentIntent.client_secret}`)
+          }, 3000);
           clearCart()
           toast.success('Pedido realizado com Sucesso')
         } else if (status === 400 || status === 409) {
@@ -72,7 +71,7 @@ export default function CheckoutForm() {
     }
 
      else {
-      toast.error('Falha no sistema! Tente novamente')
+      navigate(`/complete?payment_intent_client_secret=${paymentIntent.client_secret}`)
     }
     setIsLoading(false);
     
