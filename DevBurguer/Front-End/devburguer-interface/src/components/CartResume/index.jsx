@@ -6,6 +6,7 @@ import {useCart} from '../../hooks/CartContext';
 import {api} from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import {formatPrice} from '../../utils/formatPrice';
+import { ApertureIcon } from '@phosphor-icons/react';
 //Usa o {} quando não é exportado Default
 
 export function CartResume() {
@@ -31,10 +32,27 @@ export function CartResume() {
     //Usamos async quando vamos nos comunicar com a API
     const submitOrder = async () => {  
         const products = cartProducts.map( (product) => {
-            return { id: product.id, quantity: product.quantity}
+            return { id: product.id, quantity: product.quantity, price: product.price}
         })
         
         try {
+            const response = await api.post('create-payment-intent', {products});
+            console.log(response)
+        } catch (error) {
+            toast.error('Erro, tente novamente!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+         
+        /*
+        //try {
         const { status } = 
         await api.post('/orders', {products}, {
         validateStatus: () => true,
@@ -54,9 +72,9 @@ export function CartResume() {
         } else {
             throw new Error()
         }
-        } catch (error) {
-        toast.error('Falha no sistema! Tente novamente')
-        }
+        //} catch (error) {
+        //toast.error('Falha no sistema! Tente novamente')
+        }*/
 
 
     }
