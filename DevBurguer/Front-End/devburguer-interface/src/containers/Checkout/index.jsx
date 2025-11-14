@@ -1,7 +1,20 @@
+import { Elements } from "@stripe/react-stripe-js";
+import { useLocation } from "react-router-dom"
+import stripePromise from "../../config/stripeConfig";
+import CheckoutForm from "../../components/Stripe/CheckoutForm";
+
+
 export function Checkout() {
+    //O useLocation serve para receber as info que foram mandadas na tela anterior
+    const {state: {clientSecret}} = useLocation();
+
+    if (!clientSecret) {
+        return (<div>Erro, volte e tente novamente</div>)
+    }
+
     return (
-        <div>
-            <h1>Checkout</h1>
-        </div>
+        <Elements stripe={stripePromise} options={{clientSecret}} >
+            <CheckoutForm/>
+        </Elements>
     )
 }

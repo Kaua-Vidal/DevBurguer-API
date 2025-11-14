@@ -36,8 +36,11 @@ export function CartResume() {
         })
         
         try {
-            const response = await api.post('create-payment-intent', {products});
-            console.log(response)
+            const {data} = await api.post('create-payment-intent', {products});
+            navigate('/checkout', {
+                //O state serve para mandar info de uma rota para outra
+                state: data,
+            })
         } catch (error) {
             toast.error('Erro, tente novamente!', {
                 position: "top-right",
