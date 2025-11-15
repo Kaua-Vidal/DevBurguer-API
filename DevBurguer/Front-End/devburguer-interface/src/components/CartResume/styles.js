@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-    background-color: #fff;
+    background-color: ${(props) => props.theme.white};
     border-radius: 20px;
     display: flex;
     flex-direction: column;
@@ -9,7 +9,7 @@ export const Container = styled.div`
     margin-bottom: 20px;
 
     * {
-        color: #484848;
+        color: ${(props) => props.theme.secondBlack};
         font-weight: 500;
     }
 
@@ -22,8 +22,8 @@ export const Container = styled.div`
         'delivery-tax delivery-tax-price';
 
         .title {
-            background-color: #484848;
-            color: #fff;
+            background-color: ${(props) => props.theme.secondBlack};
+            color: ${(props) => props.theme.white};
             width: 100%;
             grid-area: title;
             font-size: 20px;
