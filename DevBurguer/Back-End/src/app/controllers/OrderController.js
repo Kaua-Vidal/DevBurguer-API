@@ -58,7 +58,7 @@ class OrderController {
             name: userName
         },
         products: mapedProducts,
-        status: "Pedido realiado"
+        status: "Pedido realizado"
     }
 
     const newOrder = await Order.create(order)
