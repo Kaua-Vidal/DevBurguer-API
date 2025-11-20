@@ -9,14 +9,18 @@ import Paper from '@mui/material/Paper';
 import {Row} from './row'
 import { useEffect, useState } from 'react';
 import {api} from '../../../services/api'
+import { orderStatusOptions } from './orderStatus';
+import { FilterOption, Filter } from './styles';
 
 
 
 export function Orders() {
 
   //Criação de um estados onde será guardado os dados que vierem da api
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState([]);  //BACKUP  
+  const [filteredOrders, setFilteredOrders] = useState([]);   //VALORES DA TELA
   const [rows, setRows] = useState([]);
+  const [activeStatus, setActiveStatus] = useState(0); //GUARDAR ID DA PG DO ITEM
 
 
   //O useEffect usamos para buscar os dados da api
@@ -27,6 +31,7 @@ export function Orders() {
       const { data } = await api.get('/orders');
 
       setOrders(data)
+      setFilteredOrders(data)
     }
 
     loadOrders()
@@ -48,13 +53,51 @@ function createData(order) {
 //Sempre que [orders] tiver alguma alteração, ele chama o que está
 //dentro do useEffect
 useEffect(() => {
-    const newRows = orders.map( order => createData(order));
+    const newRows = filteredOrders.map( order => createData(order));
 
     setRows(newRows)
+  }, [filteredOrders])
+
+
+  function handleStatus(status) {
+    if (status.id === 0) {
+      setFilteredOrders(orders);
+    } else {
+      const newOrders = orders.filter((order) => order.status === status.value);
+      setFilteredOrders(newOrders)
+    }
+
+    setActiveStatus(status.id)
+  }
+
+  useEffect(() => {
+    if (activeStatus === 0) {
+      setFilteredOrders(orders);
+    } else {
+      const statusIndex = orderStatusOptions.findIndex(item => item.id === activeStatus);
+      const newFilteredOrders = orders.filter( order => order.status === orderStatusOptions[statusIndex].value)
+      setFilteredOrders(newFilteredOrders)
+    }
+    
+
   }, [orders])
 
-
   return (
+    //FRAGMENT (<> - </>): Serve para cumprir a regra do react
+    //$ -> Usa-se quando o parametro será usado apenas o StyledComponents
+    <>
+    <Filter>
+      {orderStatusOptions.map(status => (
+        <FilterOption 
+        key={status.id}
+        onClick={() => handleStatus(status)}
+        $isActiveStatus={activeStatus === status.id}
+        >
+          {status.label}</FilterOption>
+      ))}
+      
+    </Filter>
+
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
@@ -74,5 +117,6 @@ useEffect(() => {
         </TableBody>
       </Table>
     </TableContainer>
+    </>
   );
 }
