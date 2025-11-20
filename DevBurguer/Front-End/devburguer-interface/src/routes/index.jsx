@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { Cart, Checkout, CompletePayment, EditProduct, Home, Login, Menu, NewProduct, Orders, Products, Register } from "../containers/";
+import { Cart, Checkout, CompletePayment, EditProduct, Home, Login, Menu, NewProduct, Orders, Products, Register } from "../containers";
 import { UserLayout } from "../layouts/UserLayout";
 import { AdminLayout } from "../layouts/AdminLayout";
 
