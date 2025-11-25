@@ -20,8 +20,7 @@ class CategoryController {
 
         const existingCategory = await Category.findOne({
             where: {
-                name
-                
+                name  //Parametro de busca
             }
         })
 
@@ -34,7 +33,8 @@ class CategoryController {
             path: filename
         })
 
-        return response.status(201).json(newCategory)
+        return response.status(201).json(newCategory) 
+        //Retorna para o front-end
     }
 
     async update (request, response) {
@@ -71,6 +71,10 @@ class CategoryController {
             return response.status(400).json({error: 'Category already exists'})
         }
 
+
+        /**
+         * Atualiza o nome e path onde tem aquele ID
+         */
         await Category.update({
             name,
             path,
@@ -84,6 +88,10 @@ class CategoryController {
         return response.status(201).json()
     }
 
+
+    /**
+     * Retorna todas as categorias
+     */
     async index(_request, response) {
         const categories = await Category.findAll()
 
