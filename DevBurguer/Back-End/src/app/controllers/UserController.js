@@ -26,10 +26,12 @@ class UserController {
         } catch (err) {
             return response.status(400).json({error: err.errors});
         }
+        //O (abortEarly) retorna todos os erros de validação de uma vez só
         
 
         const {name, email, password, admin} = request.body
 
+        //Verifica se já existe para evitar duplicata
         const existingUser = await User.findOne({
             where: {
                 email,
@@ -41,6 +43,7 @@ class UserController {
 
         const password_hash = await bcrypt.hash(password, 10);
 
+        //Criação do usuario no BD
         const user = await User.create(
             {
                 id: v4(),

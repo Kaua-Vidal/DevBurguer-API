@@ -24,6 +24,7 @@ class Product extends Model {
     return this
     }
 
+    //O (associate) define a relação entre tabelas
     static associate(models) {
         this.belongsTo(models.Category, 
             {
