@@ -20,16 +20,16 @@ class OrderController {
             return response.status(400).json({error: err.errors});
         }
 
-    const { userId, userName} = request
-    const { products } = request.body
+    const { userId, userName} = request //Pegando os dados do usuario via authMiddleware
+    const { products } = request.body  //Pegando os dados dos produtos enviados pelo usuario
 
     const productIds = products.map(product => product.id)
 
     const findedProducts = await Product.findAll({
         where: {
-            id: productIds
+            id: productIds  //"Me traz todos os produtos cujo id está nesse array"
         },
-        include: {
+        include: {  //Inclua também a categoria junto, mas apenas o nome da categoria
             model: Category,
             as: 'category',
             attributes: ['name']
@@ -38,6 +38,7 @@ class OrderController {
 
     const mapedProducts = findedProducts.map(product => {
 
+        //Verifica se o ID do produto que está no BD é igual ao passado pelo usuario
         const quantity = products.find(p => p.id === product.id).quantity
 
         const newProduct = {
@@ -52,6 +53,7 @@ class OrderController {
         return newProduct
     })
 
+    //Criação do pedido no MONGO
     const order = {
         user: {
             id: userId,
@@ -81,6 +83,7 @@ class OrderController {
         const { id } = request.params
 
         try {
+                                   //filtro    //Valor para atualizar
             await Order.updateOne({ _id: id }, { status })
         } catch (err) {
             return response.status(400).json({error: err.message})
