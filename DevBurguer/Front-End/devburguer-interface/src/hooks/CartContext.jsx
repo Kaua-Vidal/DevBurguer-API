@@ -10,16 +10,22 @@ const putProductInCart = (product) => {
 
      let newProductsInCart = []
      if (cartIndex >= 0) {
-        newProductsInCart = cartProducts;
+    // cria uma cópia do array
+    newProductsInCart = [...cartProducts];
 
-        newProductsInCart[cartIndex].quantity = newProductsInCart[cartIndex].quantity + 1;
-        setCartProducts(newProductsInCart);
-     } else {
-        product.quantity = 1
-        newProductsInCart = [...cartProducts, product]
-        setCartProducts(newProductsInCart)
-     }
+    // cria uma cópia do item também
+    newProductsInCart[cartIndex] = {
+      ...newProductsInCart[cartIndex],
+      quantity: newProductsInCart[cartIndex].quantity + 1,
+    };
 
+  } else {
+    newProductsInCart = [
+      ...cartProducts,
+      { ...product, quantity: 1 }
+    ];
+  }
+    setCartProducts(newProductsInCart);
      updateLocalStorage(newProductsInCart)
 
      
@@ -81,6 +87,8 @@ useEffect( () => {
     }
 },[])
 
+const totalItens = cartProducts.reduce((acc, prd) => acc + prd.quantity, 0)
+
 
 
     return ( <CartContext.Provider 
@@ -90,12 +98,17 @@ useEffect( () => {
             clearCart, 
             increaseProduct, 
             decreaseProduct,
-            deleteProduct}}>
+            deleteProduct,
+            totalItens,}}>
         {children}
     </CartContext.Provider>
 
     )
+
+    
 }
+
+
 
 export const useCart = () => {
     const context = useContext(CartContext)

@@ -75,6 +75,7 @@ export const Profile = styled.div`
     }
 `;
 export const LinkContainer = styled(Link)`
+    position: relative;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -88,3 +89,23 @@ export const Logout = styled.button`
     background-color: transparent;
     border: none;
 `;
+
+
+
+export const InfoCart = styled.a`
+    position: absolute;
+    top: -7px;
+    left: 14px;
+
+    background-color: ${(props) => props.theme.purple};
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: ${(props) => props.theme.white};
+
+`
