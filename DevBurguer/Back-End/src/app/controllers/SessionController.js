@@ -40,6 +40,8 @@ class SessionController {
             emailOrPasswordIncorrect()
         }
 
+
+        //Compara a senha digitada pelo usuario com a senha do banco de dados
         const isPasswordCorrect = await bcrypt.compare(password, existingUser.password_hash)
 
         if (!isPasswordCorrect) {

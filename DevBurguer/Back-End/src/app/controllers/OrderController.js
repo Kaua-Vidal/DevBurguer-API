@@ -20,7 +20,7 @@ class OrderController {
             return response.status(400).json({error: err.errors});
         }
 
-    const { userId, userName} = request
+    const { userId, userName} = request //Vem do authMiddleware
     const { products } = request.body
 
     const productIds = products.map(product => product.id)

@@ -13,7 +13,7 @@ class Category extends Model {
                     }
             }
         }, 
-        {
+        { //Configurações do model
             sequelize,
             tableName: 'categories'
         }

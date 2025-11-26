@@ -3,6 +3,7 @@ import Product from '../models/Product.js';
 import Category from '../models/Category.js';
 
 class ProductController {
+    //Isso é uma criação de um schema de objeto (uma regra)
     async store (request, response) {
         const schema = Yup.object({
             name: Yup.string().required(),
@@ -16,6 +17,7 @@ class ProductController {
         } catch (err) {
             return response.status(400).json({error: err.errors});
         }
+        //O validadeSync vai validar os dados do yup, do schema, sincronamento
 
         const {name, price, category_id, offer } = request.body
         const { filename } = request.file
@@ -78,6 +80,7 @@ class ProductController {
                 attributes: ['id', 'name']
             }
         })
+        //Include serve para unir tabelas e pegar os dados juntos
 
 
 

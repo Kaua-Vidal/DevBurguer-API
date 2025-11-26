@@ -25,6 +25,8 @@ const upload = multer(multerConfig)
 routes.post('/users', UserController.store)
 routes.post('/sessions', SessionController.store)
 
+//A partir daqui, todas as rotas exigem usuario logado
+//Apenas quem possui token
 routes.use(authMiddleware)
 routes.post('/products', adminMiddleware, upload.single('file'), ProductController.store)
 routes.put('/products/:id', adminMiddleware, upload.single('file'), ProductController.update)
