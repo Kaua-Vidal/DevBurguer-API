@@ -1,6 +1,6 @@
 import { navLinks } from "./navLinks";
 import Logo from '../../assets/logo.svg'
-import { SignOutIcon } from "@phosphor-icons/react";
+import { SignOutIcon, UserSwitchIcon } from "@phosphor-icons/react";
 import { Container, NavLinkContainer, NavLink, Footer } from "./styles";
 import { useUser } from "../../hooks/UserContext";
 import { useResolvedPath } from "react-router-dom";
@@ -31,6 +31,10 @@ export function SideNavAdmin() {
                 <NavLink to='/login' onClick={logout}>
                     <SignOutIcon/>
                     <span>Sair</span>
+                </NavLink>
+                <NavLink to='/'>
+                    <UserSwitchIcon/>
+                    <span>Área do Cliente</span>
                 </NavLink>
             </Footer>
         </Container>

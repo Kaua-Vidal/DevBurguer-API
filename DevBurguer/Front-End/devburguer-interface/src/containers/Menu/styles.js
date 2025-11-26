@@ -68,13 +68,13 @@ export const CategoryButton = styled(Link) `
     text-decoration: none;
     cursor: pointer;
     background: none;
-    color: ${props => props.$isActiveCategory ? (props) => props.theme.purple : '#656565ff'};
+    color: ${props => props.$isActiveCategory ? props.theme.purple : '#656565ff'};
     font-size: 24px;
     font-weight: 500;
     padding-bottom: 5px;
     line-height: 20px;
     border: none;
-    border-bottom: ${ props => props.$isActiveCategory && `3px solid ${(props) => props.theme.purple}`};
+    border-bottom: ${ props => props.$isActiveCategory ? `3px solid ${props.theme.purple}` : 'none'};
 `;
 
 export const HomeButton = styled.button `

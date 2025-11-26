@@ -8,8 +8,8 @@ export function Router() {
         <Routes>
             <Route path='/' element={<UserLayout/>}>
                 <Route path='/' element={<Home/>}/>
-                <Route path='/Cardapio' element={<Menu/>}/>
-                <Route path='/Carrinho' element={<Cart/>}/>
+                <Route path='/cardapio' element={<Menu/>}/>
+                <Route path='/carrinho' element={<Cart/>}/>
                 <Route path='/checkout' element={<Checkout/>}/>
                 <Route path='/complete' element={<CompletePayment/>}/>
             </Route>

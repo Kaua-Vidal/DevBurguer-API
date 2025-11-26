@@ -30,7 +30,6 @@ export function Menu() {
     }
     return 0
   });
-
   console.log(queryParams);
 
   useEffect(() => {
@@ -57,16 +56,11 @@ export function Menu() {
   }, []);
 
   useEffect(() => {
-    if (activeCategory === 0) {
-      setFilteredProducts(products);
-    } else {
-      const newFilteredProducts = products.filter(
-        (product) => product.category_id === activeCategory,
-      );
+  if (products.length === 0) return;
 
-      setFilteredProducts(newFilteredProducts);
-    }
-  }, [products, activeCategory]);
+  if (activeCategory === 0) setFilteredProducts(products);
+  else setFilteredProducts(products.filter(p => p.category_id === activeCategory));
+}, [products, activeCategory]);
 
   return (
     <Container>
@@ -87,19 +81,12 @@ export function Menu() {
         {categories.map((category) => (
           <CategoryButton
             key={category.id}
+            to={`cardapio?categoria=${category.id}`}
             $isActiveCategory={category.id === activeCategory}
             onClick={() => {
-              navigate(
-                {
-                  pathname: '/cardapio',
-                  search: `?categoria=${category.id}`,
-                },
-                {
-                  replace: true,
-                },
-              );
-              setActiveCategory(category.id);
+              setActiveCategory(category.id)
             }}
+            
           >
             {category.name}
             
