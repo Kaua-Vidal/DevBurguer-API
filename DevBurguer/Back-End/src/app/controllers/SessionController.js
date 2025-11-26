@@ -21,6 +21,7 @@ class SessionController {
 
         const isValid = await schema.isValid(request.body, { strict: true , abortEarly: false});
 
+        
         const emailOrPasswordIncorrect = () => {
             return response.status(400).json({error: 'Email or password incorrect'});
         }
@@ -39,7 +40,6 @@ class SessionController {
         if (!existingUser) {
             emailOrPasswordIncorrect()
         }
-
 
         //Compara a senha digitada pelo usuario com a senha do banco de dados
         const isPasswordCorrect = await bcrypt.compare(password, existingUser.password_hash)

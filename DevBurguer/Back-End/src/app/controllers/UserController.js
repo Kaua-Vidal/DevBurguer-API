@@ -27,7 +27,6 @@ class UserController {
             return response.status(400).json({error: err.errors});
         }
         //O (abortEarly) retorna todos os erros de validação de uma vez só
-        
 
         const {name, email, password, admin} = request.body
 

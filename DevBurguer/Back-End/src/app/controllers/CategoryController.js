@@ -21,11 +21,13 @@ class CategoryController {
         const existingCategory = await Category.findOne({
             where: {
                 name  //Parametro de busca
+                
             }
         })
 
         if(existingCategory) {
             return response.status(400).json({error: 'Category already exists'})
+
         }
 
         const newCategory = await Category.create({
@@ -33,7 +35,7 @@ class CategoryController {
             path: filename
         })
 
-        return response.status(201).json(newCategory) 
+        return response.status(201).json(newCategory)
         //Retorna para o front-end
     }
 
@@ -71,7 +73,6 @@ class CategoryController {
             return response.status(400).json({error: 'Category already exists'})
         }
 
-
         /**
          * Atualiza o nome e path onde tem aquele ID
          */
@@ -87,7 +88,6 @@ class CategoryController {
 
         return response.status(201).json()
     }
-
 
     /**
      * Retorna todas as categorias

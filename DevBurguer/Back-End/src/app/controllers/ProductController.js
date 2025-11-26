@@ -80,9 +80,7 @@ class ProductController {
                 attributes: ['id', 'name']
             }
         })
-        //Include serve para unir tabelas e pegar os dados juntos
-
-
+         //Include serve para unir tabelas e pegar os dados juntos
 
         return response.status(200).json(products)
     }
