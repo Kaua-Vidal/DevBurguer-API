@@ -15,6 +15,7 @@ class CategoryController {
 
 
 
+        //Campos vem do authMiddleware
         const { name } = request.body
         const {filename} = request.file
 
