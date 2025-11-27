@@ -3,6 +3,7 @@ import { SideNavAdmin } from "../../components"
 import { Container } from './styles'
 
 export function AdminLayout() {
+    //Renomeia a propria admin para isAdmin
     const { admin: isAdmin } = JSON.parse(
         localStorage.getItem('devburguer:userData')
     )

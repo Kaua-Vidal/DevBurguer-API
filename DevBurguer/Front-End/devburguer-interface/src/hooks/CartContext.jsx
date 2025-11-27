@@ -16,6 +16,7 @@ const putProductInCart = (product) => {
     // cria uma cópia do item também
     newProductsInCart[cartIndex] = {
       ...newProductsInCart[cartIndex],
+      
       quantity: newProductsInCart[cartIndex].quantity + 1,
     };
 
@@ -36,16 +37,17 @@ const putProductInCart = (product) => {
 
 const clearCart = () => {
     setCartProducts([])
-
     updateLocalStorage([])
 }
 
 const deleteProduct = (productId) => {
+    //Filtrar todos os itens menos o item que deve ser removido
     const newCart = cartProducts.filter((prd) => prd.id !== productId)
 
     setCartProducts(newCart)
     updateLocalStorage(newCart)
 }
+
 
 const increaseProduct = (productId) => {
     const newCart = cartProducts.map( prd => {
@@ -91,6 +93,7 @@ const totalItens = cartProducts.reduce((acc, prd) => acc + prd.quantity, 0)
 
 
 
+//Isso que ficará acessivel na aplicação
     return ( <CartContext.Provider 
         value={{
             cartProducts, 
@@ -109,7 +112,7 @@ const totalItens = cartProducts.reduce((acc, prd) => acc + prd.quantity, 0)
 }
 
 
-
+//Serve para poder usar o useCart nas demais partes da aplicação
 export const useCart = () => {
     const context = useContext(CartContext)
 

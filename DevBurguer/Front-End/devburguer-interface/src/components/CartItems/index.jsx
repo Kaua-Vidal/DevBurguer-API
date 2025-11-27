@@ -6,7 +6,6 @@ import { ButtonGroup, EmptyCart, ProductImage, ProductTotalPrice, TrashImage } f
 
 export function CartItems() {
   const { cartProducts, increaseProduct, decreaseProduct, deleteProduct } = useCart();
-  console.log(cartProducts);
   return (
     <Table.Root>
       <Table.Header>

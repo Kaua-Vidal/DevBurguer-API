@@ -22,10 +22,13 @@ export function Row({row, setOrders, orders}) {
   const [loading, setLoading] = useState(false);
   
   
+  //id ->  id do pedido que será alterado
+  //status -> novo status que queremos aplicar
   async function newStatusOrder(id, status) {
 
     try {
       setLoading(true)
+      //Faz um put em orders e manda o valor que será alterado
       await api.put(`orders/${id}`, {status});
                                                                 //SpreadOperator
       const newOrders = orders.map( (order) => order._id === id ? { ...order, status} : order)

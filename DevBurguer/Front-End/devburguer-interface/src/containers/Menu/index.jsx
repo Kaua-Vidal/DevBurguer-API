@@ -22,6 +22,7 @@ export function Menu() {
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
 
+                                            //Função inicializadora -> Só executada 1 vez
   const [activeCategory, setActiveCategory] = useState(() => {
     const categoryId = +queryParams.get('categoria');
 
@@ -30,12 +31,12 @@ export function Menu() {
     }
     return 0
   });
-  console.log(queryParams);
 
   useEffect(() => {
     async function loadCategories() {
       const { data } = await api.get('/categories');
 
+      //Cria um novo array onde a primeira categoria seja "Todas"
       const newCategories = [{ id: 0, name: 'Todas' }, ...data];
 
       setCategories(newCategories);
@@ -58,6 +59,7 @@ export function Menu() {
   useEffect(() => {
   if (products.length === 0) return;
 
+  //0 -> Categoria TODOS -> Já carrega direto
   if (activeCategory === 0) setFilteredProducts(products);
   else setFilteredProducts(products.filter(p => p.category_id === activeCategory));
 }, [products, activeCategory]);

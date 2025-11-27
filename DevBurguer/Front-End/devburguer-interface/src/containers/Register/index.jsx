@@ -38,12 +38,14 @@ export function Register() {
     })
     .required();
 
+    //Extraindo ferramentas do useForm (ReactHookForm)
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
+    register,                         //Função para conectar o campo do form ao reactHookForm
+    handleSubmit,                     //Valida os dados do schema do yup
+    formState: { errors },            //Lança os erros definidos
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema),    //Conecta o YUP ao hookForm, quando o usuario manda
+                                      //o Yup já valida
   });
 
 

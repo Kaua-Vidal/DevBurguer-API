@@ -53,32 +53,6 @@ export function CartResume() {
                 theme: "light",
             });
         }
-         
-        /*
-        //try {
-        const { status } = 
-        await api.post('/orders', {products}, {
-        validateStatus: () => true,
-        })
-    
-
-        if (status === 200 || status === 201) {
-            
-        setTimeout(() => {
-            navigate('/')
-        }, 2000);
-
-        clearCart()
-            toast.success('Pedido realizado com Sucesso')
-        } else if (status === 400 || status === 409) {
-            toast.error('Falha ao realizar o seu pedido')
-        } else {
-            throw new Error()
-        }
-        //} catch (error) {
-        //toast.error('Falha no sistema! Tente novamente')
-        }*/
-
 
     }
 

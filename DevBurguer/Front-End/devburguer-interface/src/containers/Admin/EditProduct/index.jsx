@@ -52,6 +52,7 @@ export function EditProduct() {
   const onSubmit = async (data) => {
     const productFormData = new FormData()
 
+    //Com o FormData, o backend pode trocar a imagem antiga
     productFormData.append('name', data.name)
     productFormData.append('price', data.price)
     productFormData.append('category_id', data.category.id)

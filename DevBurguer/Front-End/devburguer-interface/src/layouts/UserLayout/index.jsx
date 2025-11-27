@@ -5,7 +5,7 @@ export function UserLayout() {
     return (
         <>
             <Header/>
-                <Outlet/>
+                <Outlet/> {/**Onde a página aparece */}
             <Footer/>
         </>
     )

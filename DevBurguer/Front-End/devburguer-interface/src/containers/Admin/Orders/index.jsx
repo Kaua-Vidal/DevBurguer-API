@@ -38,7 +38,7 @@ export function Orders() {
   }, [])
 
   
-
+//Formato especifico da tabela
 function createData(order) {
   return {
     name: order.user.name,
@@ -75,6 +75,7 @@ useEffect(() => {
       setFilteredOrders(orders);
     } else {
       const statusIndex = orderStatusOptions.findIndex(item => item.id === activeStatus);
+                                                                            //'approved', 'rejected'...
       const newFilteredOrders = orders.filter( order => order.status === orderStatusOptions[statusIndex].value)
       setFilteredOrders(newFilteredOrders)
     }

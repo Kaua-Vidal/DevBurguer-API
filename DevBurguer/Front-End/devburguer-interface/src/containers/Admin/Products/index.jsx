@@ -15,9 +15,8 @@ import { useNavigate } from "react-router-dom";
 export function Products() {
     const [products, setProducts] = useState([]);
     const navigate = useNavigate();
+    
     useEffect(() => {
-
-
         async function loadProducts() {
             const { data } = await api.get('/products');
 
