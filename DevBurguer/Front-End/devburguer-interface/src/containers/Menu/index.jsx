@@ -83,7 +83,7 @@ export function Menu() {
         {categories.map((category) => (
           <CategoryButton
             key={category.id}
-            to={`cardapio?categoria=${category.id}`}
+            to={`/cardapio?categoria=${category.id}`}
             $isActiveCategory={category.id === activeCategory}
             onClick={() => {
               setActiveCategory(category.id)
