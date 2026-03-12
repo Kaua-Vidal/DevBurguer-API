@@ -12,7 +12,9 @@ import {
 import { UserCircleIcon, ShoppingCartIcon } from '@phosphor-icons/react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { useUser } from '../../hooks/UserContext';
-import {useCart} from '../../hooks/CartContext'
+import {useCart} from '../../hooks/CartContext';
+import logo from '../../assets/logo.png'
+
 
 export function Header() {
     
@@ -36,8 +38,10 @@ export function Header() {
   return (
     <Container>
       <Content>
+
         <Navigation>
           <div>
+            <img src={logo} alt="" />
             <HeaderLink to='/' $isActive={pathname === '/'}>Home</HeaderLink>
             <hr></hr>
             <HeaderLink to='/cardapio' $isActive={pathname === '/cardapio'}>

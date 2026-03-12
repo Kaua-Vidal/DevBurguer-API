@@ -13,7 +13,7 @@ import {
   Title,
   Link,
 } from './styles';
-import Logo from '../../assets/logo.svg';
+import Logo from '../../assets/logo.png';
 import { Button } from '../../components/Button';
 
 export function Register() {

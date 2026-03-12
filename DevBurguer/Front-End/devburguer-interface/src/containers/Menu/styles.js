@@ -68,13 +68,13 @@ export const CategoryButton = styled(Link) `
     text-decoration: none;
     cursor: pointer;
     background: none;
-    color: ${props => props.$isActiveCategory ? props.theme.purple : '#656565ff'};
+    color: ${props => props.$isActiveCategory ? props.theme.primaryRed : '#656565ff'};
     font-size: 24px;
     font-weight: 500;
     padding-bottom: 5px;
     line-height: 20px;
     border: none;
-    border-bottom: ${ props => props.$isActiveCategory ? `3px solid ${props.theme.purple}` : 'none'};
+    border-bottom: ${ props => props.$isActiveCategory ? `3px solid ${props.theme.primaryRed}` : 'none'};
 `;
 
 export const HomeButton = styled.button `
@@ -86,7 +86,7 @@ export const HomeButton = styled.button `
     padding: 5px;
     background: none;
     border: none;
-    color: ${(props) => props.theme.purple} ;
+    color: ${(props) => props.theme.primaryRed} ;
     font-weight: 500;
     font-size: 20px;
     transition: all 300ms ease;

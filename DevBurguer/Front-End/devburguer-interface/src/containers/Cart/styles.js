@@ -3,6 +3,7 @@ import Texture from '../../assets/texture.svg';
 import Background from '../../assets/background.svg'
 
 
+
 export const Container = styled.div`
     width: 100%;
     background: linear-gradient(
@@ -31,7 +32,7 @@ export const Title = styled.div`
     font-size: 32px;
     font-weight: 800;
     padding-bottom: 12px;
-    color: ${(props) => props.theme.gren};
+    color: ${(props) => props.theme.darkRed};
     text-align: center;
     position: relative;
 
@@ -42,7 +43,7 @@ export const Title = styled.div`
         content: '';
         width: 56px;
         height: 4px;
-        background-color: ${(props) => props.theme.gren};
+        background-color: ${(props) => props.theme.cheddarOrange};
         
     }
 `

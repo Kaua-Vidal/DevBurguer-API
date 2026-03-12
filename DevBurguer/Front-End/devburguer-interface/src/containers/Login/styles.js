@@ -1,7 +1,7 @@
 import { Link as ReactLink } from 'react-router-dom';
 import styled from 'styled-components';
-import BackgroundLogin from '../../assets/background-login.svg';
 import Background from '../../assets/background.svg';
+import BackgroundLogin from '../../assets/fundo.jpg'
 
 export const Container = styled.div`
     display: flex;;
@@ -57,7 +57,7 @@ export const Title = styled.h2`
     color: ${(props) => props.theme.white};
 
     span {
-        color: #7e3491ff;
+        color: ${(props) => props.theme.primaryRed};
         font-family: "Road Rage", sans-serif;
     }
 `;

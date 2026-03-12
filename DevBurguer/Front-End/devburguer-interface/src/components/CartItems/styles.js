@@ -18,12 +18,12 @@ export const ButtonGroup = styled.div`
         width: 30px;
         color: ${(props) => props.theme.white};
         border-radius: 4px;
-        background-color: ${(props) => props.theme.purple};
+        background-color: ${(props) => props.theme.white};
         transition: all 300ms ease;
         border: none;
 
         &:hover {
-            background-color: ${(props) => props.theme.secondDarkPurple}
+            background: ${(props) => props.theme.gradients.secondRedGradient}
         }
     }
 `

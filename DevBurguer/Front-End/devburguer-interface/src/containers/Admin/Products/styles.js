@@ -18,7 +18,7 @@ export const EditButton = styled.button`
     }
 
     &:hover {
-        background-color: ${props => props.theme.purple};
+        background-color: ${props => props.theme.primaryRed};
 
         svg {
             fill: ${props => props.theme.white};

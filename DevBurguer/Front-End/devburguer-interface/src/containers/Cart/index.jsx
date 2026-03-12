@@ -1,4 +1,4 @@
-import Logo from '../../assets/logo.svg'
+import Logo from '../../assets/logo.png'
 import { CartItems, CartResume } from '../../components'
 import { Banner, Container, Content, Title } from './styles'
 

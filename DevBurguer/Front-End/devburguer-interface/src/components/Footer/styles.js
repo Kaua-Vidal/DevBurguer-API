@@ -1,8 +1,9 @@
 import styled from "styled-components";
+import Fundo from '../../assets/fundo.jpg';
 
 export const Container = styled.div `
     height: 50px;
-    background-color: ${(props) => props.theme.darkPurple};
+    background: url('${Fundo}');
     width: 100vw;
     display: flex;
     align-items: center;

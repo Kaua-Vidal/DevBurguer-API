@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import Fundo from '../../assets/fundo.jpg';
 
 export const Container = styled.div`
-    background: ${props => props.theme.mainBlack};
+    background: url('${Fundo}');
     width: 100%;
     height: 72px;
     padding: 0 56px;
@@ -22,6 +23,7 @@ export const Navigation = styled.nav`
     align-items: center;
     justify-content: center;
     height: 72px;
+    margin-left: 40px;
 
     div {
         display: flex;
@@ -34,20 +36,30 @@ export const Navigation = styled.nav`
             border: 1px solid #655e5e
         }
     }
+
+    img {
+        position: absolute;
+        left: 20px;
+        margin-top: 40px;
+        transform: rotate(-10deg);
+        width: 120px;
+        height: 120px;
+        z-index: 999;
+    }
 `;
 
 export const HeaderLink = styled(Link)`
     color: ${props => props.$isActive 
-    ? (props) => props.theme.purple 
+    ? (props) => props.theme.primaryRed 
     : (props) => props.theme.white};
-    border-bottom: ${props => props.$isActive ? `1px solid ${(props) => props.theme.purple}`  : 'none'};
+    border-bottom: ${props => props.$isActive ? `1px solid ${(props) => props.theme.primaryRed}`  : 'none'};
     padding-bottom: 5px;
     text-decoration: none;
     font-size: 14px;
     transition: color 200ms;
 
     &:hover {
-        color: ${(props) => props.theme.purple }; 
+        color: ${(props) => props.theme.primaryRed }; 
     }
 `;
 export const Options = styled.div`
@@ -69,7 +81,7 @@ export const Profile = styled.div`
 
         span {
             font-weight: 700;
-            color: ${(props) => props.theme.purple };
+            color: ${(props) => props.theme.primaryRed };
         }
 
     }
@@ -79,6 +91,7 @@ export const LinkContainer = styled(Link)`
     display: flex;
     align-items: center;
     gap: 10px;
+    text-decoration: none;
 `;
 
 
@@ -97,7 +110,7 @@ export const InfoCart = styled.a`
     top: -7px;
     left: 14px;
 
-    background-color: ${(props) => props.theme.purple};
+    background-color: ${(props) => props.theme.primaryRed};
     width: 20px;
     height: 20px;
     border-radius: 50%;

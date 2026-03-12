@@ -23,9 +23,9 @@ export const FilterOption = styled.button`
     background-color: none;
     border: none;
     color: ${(props) => 
-        props.$isActiveStatus ? props.theme.purple : props.theme.darkGray};
+        props.$isActiveStatus ? props.theme.primaryRed : props.theme.darkGray};
     border-bottom: ${(props) => 
-        props.$isActiveStatus ? `2px solid ${props.theme.purple}` : 'none'};
+        props.$isActiveStatus ? `2px solid ${props.theme.primaryRed}` : 'none'};
     font-size: 18px;
     line-height: 20px;
     padding-bottom: 5px;

@@ -1,6 +1,6 @@
 import { Link as ReactLink } from 'react-router-dom';
 import styled from 'styled-components';
-import BackgroundLogin from '../../assets/background-login.svg';
+import BackgroundLogin from '../../assets/fundo.jpg';
 import Background from '../../assets/background.svg';
 
 export const Container = styled.div`
@@ -54,7 +54,7 @@ export const RightContainer = styled.div`
 export const Title = styled.h2`
     font-family: "Road Rage", sans-serif;
     font-size: 40px;
-    color: ${(props) => props.theme.purple};
+    color: ${(props) => props.theme.primaryRed};
 
 `;
 
