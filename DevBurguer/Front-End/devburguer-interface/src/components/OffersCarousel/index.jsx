@@ -6,6 +6,7 @@ import 'react-multi-carousel/lib/styles.css';
 import { CardProduct } from '../CardProduct';
 import { formatPrice } from '../../utils/formatPrice';
 
+
 export function OffersCarousel() {
   const [offers, setOffers] = useState([]);
 
@@ -53,7 +54,7 @@ export function OffersCarousel() {
         itemClass="carousel-item"
       >
         {offers.map((product) => (
-          <CardProduct key={product.id} product={product}/>
+          <CardProduct key={product.id} product={product} />
         ))}
       </Carousel>
     </Container>

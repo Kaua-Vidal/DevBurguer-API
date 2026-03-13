@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import fundoBrilhante from '../../assets/fundo2.jpg';
 
 export const Root = styled.table`
     width: 100%;
@@ -6,15 +7,21 @@ export const Root = styled.table`
     background-color: ${(props) => props.theme.white};
     border-radius: 20px;
 `;
-export const Header = styled.thead``;
-export const Tr = styled.tr``;
+export const Header = styled.thead`
+    tr{
+        background: url('${fundoBrilhante}');
+        background-size: cover;
+    }
+    
+`;
+export const Tr = styled.tr`
+`;
 export const Th = styled.th`
     padding: 16px;
     text-align: left;
     color: ${(props) => props.theme.white};
-    background-color: ${(props) => props.theme.secondBlack};
     border-bottom: 1px solid ${(props) => props.theme.lightGray};
-
+    
 
     &:last-child{
         border-top-right-radius: 20px;
@@ -23,6 +30,7 @@ export const Th = styled.th`
     &:first-child{
         border-top-left-radius: 20px;
     }
+    
     
     
 `;

@@ -82,7 +82,7 @@ export function Login() {
 
       <RightContainer>
         <Title>
-          Olá, seja bem vindo ao <span>Dev Burguer!</span>
+          Olá, seja bem vindo ao <span>Stack Burguer!</span>
           <br />
           Acesse com seu
           <span> Login e senha.</span>

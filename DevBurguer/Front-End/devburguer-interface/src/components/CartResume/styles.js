@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import fundoBrilhante from '../../assets/fundoBrilhante.jpg'
+import fundoBrilhante from '../../assets/fundo2.jpg'
 
 export const Container = styled.div`
     background-color: ${(props) => props.theme.white};
@@ -24,8 +24,7 @@ export const Container = styled.div`
 
         .title {
             background: url('${fundoBrilhante}');
-            background-position-y: 150px;
-            background-position-x: 150px;
+            background-size: cover;
             color: ${(props) => props.theme.white};
             width: 100%;
             grid-area: title;

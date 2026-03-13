@@ -10,7 +10,7 @@ export const Container = styled.nav`
     background-color: ${props => props.theme.black};
 
     img {
-        width: 60%;
+        width: 70%;
         margin: 40px 0;
 
     }
@@ -20,10 +20,16 @@ export const NavLinkContainer = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+    padding: 0 15px;
+    gap: 10px;
 `
 export const Footer = styled.footer`
+    display: flex;
+    flex-direction: column;
     width: 100%;
     margin-top: auto;
+    padding: 0 15px;
+    gap: 10px;  
 `
 export const NavLink = styled(Link)`
     display: flex;
@@ -32,9 +38,13 @@ export const NavLink = styled(Link)`
     padding: 12px 20px;
     text-decoration: none;
     color: ${props => props.theme.white};
-    background-color: ${props => props.$isActive ? props.theme.primaryRed : 'transparent'};
+    background: ${props => props.$isActive ? props.theme.gradients.redGradient : 'transparent'};
+    border-radius: 5px;
+    box-shadow: ${(props) => props.$isActive ? '5px 5px 15px 5px rgba(0,0,0,0.3)' : 'none'};
+    transition: all 300ms ease;
+
 
     &:hover {
-        background-color: ${props => props.theme.primaryRed}
+        background: ${props => props.theme.gradients.redGradient};
     }
 `
