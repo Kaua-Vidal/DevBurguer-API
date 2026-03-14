@@ -11,15 +11,20 @@ import {
   RightContainer,
   Title,
   Link,
+  GoogleButton,
 } from './styles';
 import Logo from '../../assets/logo.png';
 import { Button } from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../hooks/UserContext';
+import { useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import { GoogleLogin } from '@react-oauth/google';
 
 export function Login() {
   const navigate = useNavigate();
   const { putUserData } = useUser()
+  const [user, setUser] = useState(null);
 
   const schema = yup
     .object({
@@ -74,6 +79,17 @@ export function Login() {
     putUserData(userData);
   };
 
+  const handleSucces = (credentialResponse) => {
+    const userData = jwtDecode(credentialResponse.credential);
+    setUser(userData);
+    
+  }
+
+  const handleError = () => {
+    toast.error("Não foi possível logar. Tente novamente!")
+  }
+
+
   return (
     <Container>
       <LeftContainer>
@@ -102,6 +118,17 @@ export function Login() {
           </InputContainer>
           <Button type="submit">Entrar</Button>
         </Form>
+
+        <GoogleButton>
+          <GoogleLogin
+            onSuccess={handleSucces}
+            onError={handleError}
+            size='large'
+            shape='rectangular'
+            text='continue_with'
+            width={350}/>
+            
+        </GoogleButton>
 
         <p>
           Não possui conta? <Link to="/cadastro">Clique aqui.</Link>

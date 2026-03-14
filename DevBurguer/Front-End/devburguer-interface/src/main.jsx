@@ -8,9 +8,11 @@ import { Elements } from '@stripe/react-stripe-js';
 import stripePromise from './config/stripeConfig.js';
 import { ThemeProvider } from 'styled-components';
 import {standardTheme} from './styles/themes/standard.js'
-import { Router } from './routes'
+import { Router } from './routes';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 createRoot(document.getElementById('root')).render(
+  <GoogleOAuthProvider clientId='304969938892-a3s0mg44ub5tg21hhbscsdbhoschr6bn.apps.googleusercontent.com'>
     <ThemeProvider theme={standardTheme}>
       <AppProvider>
         <StrictMode>
@@ -24,4 +26,5 @@ createRoot(document.getElementById('root')).render(
         </StrictMode>
       </AppProvider>
     </ThemeProvider>
+  </GoogleOAuthProvider>
 );

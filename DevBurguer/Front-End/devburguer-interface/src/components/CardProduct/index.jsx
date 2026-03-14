@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import { CardImage, Container } from "./styles";
 import { CartButton } from "../CartButton";
 import { useCart} from '../../hooks/CartContext';
-import { toast } from "react-toastify";
 
 export function CardProduct({ product }) {
     const { putProductInCart } = useCart();

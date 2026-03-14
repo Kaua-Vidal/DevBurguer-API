@@ -1,6 +1,6 @@
 import { Link as ReactLink } from 'react-router-dom';
 import styled from 'styled-components';
-import Background from '../../assets/fundoLogin.png';
+import Background from '../../assets/background.svg';
 import BackgroundLogin from '../../assets/fundo.jpg'
 
 export const Container = styled.div`
@@ -104,4 +104,16 @@ export const Link = styled(ReactLink)`
     text-decoration: none;
     color: ${(props) => props.theme.white};
 `;
+
+export const GoogleButton = styled.button`
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 10px;
+    transition: all 400ms ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+`
 
