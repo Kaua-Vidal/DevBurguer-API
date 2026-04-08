@@ -12,8 +12,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)   // Auto-incremento
     private Long id;
 
+    private String categoryId;
     private String name;
     private double price;
-    private String category;
+
     private String path;
 }
