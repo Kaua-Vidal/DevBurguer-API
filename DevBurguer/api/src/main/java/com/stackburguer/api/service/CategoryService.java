@@ -20,4 +20,8 @@ public class CategoryService {
     public Category createCategory(Category category){
         return categoryRepository.save(category);
     }
+
+    public void delete(String id) {
+        categoryRepository.deleteById(id);
+    }
 }

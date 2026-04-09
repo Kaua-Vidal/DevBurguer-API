@@ -3,8 +3,10 @@ package com.stackburguer.api.controllers;
 import com.stackburguer.api.models.Category;
 import com.stackburguer.api.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.tokens.ScalarToken;
 
 import java.util.List;
 
@@ -19,14 +21,21 @@ public class CategoryController {
     }
 
     @GetMapping
-    public List<Category> ListAll(){
-        return categoryService.getAllCategories();
+    public ResponseEntity<List<Category>> getAll(){
+        return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
     @PostMapping
-    public Category save(@RequestBody Category category){
-        return categoryService.createCategory(category);
+    public ResponseEntity<Category> create(@RequestBody Category category){
+        return ResponseEntity.ok(categoryService.createCategory(category));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Category> delete(@PathVariable String id){
+        categoryService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 
 }
