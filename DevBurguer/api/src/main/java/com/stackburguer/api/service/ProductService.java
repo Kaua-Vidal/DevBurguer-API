@@ -1,5 +1,7 @@
 package com.stackburguer.api.service;
 
+import com.stackburguer.api.DTO.ProductRequestDTO;
+import com.stackburguer.api.DTO.ProductResponseDTO;
 import com.stackburguer.api.exceptions.CategoryNotFoundException;
 import com.stackburguer.api.models.Product;
 import com.stackburguer.api.repositories.jpa.ProductRepository;
@@ -25,39 +27,29 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product createProduct(Product product, MultipartFile file) throws IOException {
+    public ProductResponseDTO createProduct(ProductRequestDTO dto, MultipartFile file) throws IOException {
 
-        //Validando a categoria recebida
-        boolean exists = categoryRepository.existsById(product.getCategoryId());
-        if(!exists) {
-            throw new CategoryNotFoundException("Erro: A categoria com ID " + product.getCategoryId() + " não existe no mongoDB");
-        }
+        Product product = new Product();
+        product.setName(dto.name());
+        product.setPrice(dto.price());
+        product.setCategoryId(dto.categoryId());
 
-        //Pegamos o caminho absoluto da raiz do projeto (C:\Users\Kauã\Documents\meu-projeto)
-        String projectPath = System.getProperty("user.dir");
-
-
-        // Caminho completo até a pasta de uploads
-        String uploadDir = projectPath + File.separator + "src" + File.separator + "main" +
-                File.separator + "resources" + File.separator + "static" +
-                File.separator + "uploads" + File.separator;
-
-        //Caso o arquivo não exista, crie a pasta;
-        File directory = new File(uploadDir);
-        if(!directory.exists()) directory.mkdirs();
-
-        //Geramos o nome do arquivo
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-
-        // Pegar o arquivo da pasta temporária e escrever permanentemente
-        // na minha pasta de uploads
-        file.transferTo(new File(uploadDir + fileName));
-
-
-        // Salvar o caminho da imagem no objeto produto;
         product.setPath(fileName);
 
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+        return mapToResponseDTO(savedProduct);
+
+    }
+    private ProductResponseDTO mapToResponseDTO(Product product){
+        String fullUrl = "http://localhost:8080/uploads/" + product.getPath();
+        return new ProductResponseDTO(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                fullUrl,
+                product.getCategoryId()
+        );
     }
 
     public List<Product> getProductsByCategory(String categoryId){

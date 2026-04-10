@@ -1,6 +1,8 @@
 package com.stackburguer.api.controllers;
 
 
+import com.stackburguer.api.DTO.ProductRequestDTO;
+import com.stackburguer.api.DTO.ProductResponseDTO;
 import com.stackburguer.api.models.Product;
 import com.stackburguer.api.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +10,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -24,21 +28,25 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAll(){
+    public List<ProductResponseDTO> getAll(){
         List<Product> products = service.getAllProducts();
 
-        products.forEach(product -> {
-            String fileName = product.getPath();
-            String fullUrl = "http://localhost:8080/uploads/" + fileName;
+        return products.stream().map(product -> {
+            String fullUrl = "http://localhost:8080/uploads/" + product.getPath();
 
-            product.setPath(fullUrl);
-        });
+            return new ProductResponseDTO(
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    fullUrl,
+                    product.getCategoryId()
+            );
+        }).toList();
 
-        return products;
     }
 
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<Product> create(
+    public ResponseEntity<ProductResponseDTO> create(
             @RequestPart("product") String productJson,
             @RequestPart("file") MultipartFile file
     ) throws IOException{
@@ -47,8 +55,15 @@ public class ProductController {
         ObjectMapper objectMapper = new ObjectMapper();
 
         // Pegamos a String e encaixamos na classe product
-        Product product = objectMapper.readValue(productJson, Product.class);
-        return ResponseEntity.ok(service.createProduct(product, file));
+        ProductRequestDTO requestDto = objectMapper.readValue(productJson, ProductRequestDTO.class);
+        ProductResponseDTO response = service.createProduct(requestDto, file);
+
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+        return ResponseEntity.created(uri).body(response);
     }
 
     @GetMapping("/category/{categoryId}")
