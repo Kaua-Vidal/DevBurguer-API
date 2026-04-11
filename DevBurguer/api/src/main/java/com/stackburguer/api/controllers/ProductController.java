@@ -3,9 +3,11 @@ package com.stackburguer.api.controllers;
 
 import com.stackburguer.api.DTO.ProductRequestDTO;
 import com.stackburguer.api.DTO.ProductResponseDTO;
+import com.stackburguer.api.DTO.StandardError;
 import com.stackburguer.api.models.Product;
 import com.stackburguer.api.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +23,8 @@ import java.util.List;
 @RequestMapping("/products")  //todas minhas rotas começam com /products
 public class ProductController {
 
+    @Autowired
     private ProductService service;
-
-    public ProductController(ProductService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public List<ProductResponseDTO> getAll(){
@@ -46,24 +45,29 @@ public class ProductController {
     }
 
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<ProductResponseDTO> create(
+    public ResponseEntity<?> create(
             @RequestPart("product") String productJson,
             @RequestPart("file") MultipartFile file
-    ) throws IOException{
+    ){
+        try{
 
-        //ObjectMapper é o cara que entende JSON no Spring
-        ObjectMapper objectMapper = new ObjectMapper();
+            ProductResponseDTO response = service.createProduct(productJson, file);
 
-        // Pegamos a String e encaixamos na classe product
-        ProductRequestDTO requestDto = objectMapper.readValue(productJson, ProductRequestDTO.class);
-        ProductResponseDTO response = service.createProduct(requestDto, file);
+            URI uri = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(response.id())
+                    .toUri();
+            return ResponseEntity.created(uri).body(response);
+        }catch (IOException er){
+            return ResponseEntity.badRequest().body("Erro no formato dos dados: "+ er.getMessage());
+        } catch( Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro interno inesperado");
+        }
 
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(response.id())
-                .toUri();
-        return ResponseEntity.created(uri).body(response);
+
+
+
     }
 
     @GetMapping("/category/{categoryId}")
@@ -80,14 +84,22 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> update(
+    public ResponseEntity<ProductResponseDTO> update(
             @PathVariable Long id,
             @RequestParam("product") String productJson,
             @RequestParam(value = "file", required = false) MultipartFile file
     ) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        Product productDetails = objectMapper.readValue(productJson, Product.class);
+        ProductRequestDTO productDetails = objectMapper.readValue(productJson, ProductRequestDTO.class);
 
-        return ResponseEntity.ok(service.updateProduct(id, productDetails, file));
+        ProductResponseDTO response = service.updateProduct(id, productDetails, file);
+
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()  //onde estoua aogra?
+                .path("/{id}")  // o quero adicionar (ID)?
+                .buildAndExpand(response.id())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(response);
     }
 }

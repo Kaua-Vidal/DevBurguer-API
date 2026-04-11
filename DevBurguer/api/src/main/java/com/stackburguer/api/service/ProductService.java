@@ -9,6 +9,7 @@ import com.stackburguer.api.repositories.mongo.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,14 +28,19 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public ProductResponseDTO createProduct(ProductRequestDTO dto, MultipartFile file) throws IOException {
+    public ProductResponseDTO createProduct(String productJson, MultipartFile file) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductRequestDTO requestDto = objectMapper.readValue(productJson, ProductRequestDTO.class);
 
         Product product = new Product();
-        product.setName(dto.name());
-        product.setPrice(dto.price());
-        product.setCategoryId(dto.categoryId());
+        product.setName(requestDto.name());
+        product.setPrice(requestDto.price());
+        product.setCategoryId(requestDto.categoryId());
 
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        String uploadDir = System.getProperty("user.dir") + File.separator + "src" + "/main/resources/static/uploads/";
+        file.transferTo(new File(uploadDir + fileName));
         product.setPath(fileName);
 
         Product savedProduct = productRepository.save(product);
@@ -79,21 +85,24 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public Product updateProduct(Long id, Product details, MultipartFile file) throws IOException {
+    public ProductResponseDTO updateProduct(Long id, ProductRequestDTO details, MultipartFile file) throws IOException {
 
         //Pegamos o produto atual que está no banco
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
+
+        //Atualização dos textos
+        existingProduct.setName(details.name());
+        existingProduct.setPrice(details.price());
+        existingProduct.setCategoryId(details.categoryId());
+
         //Validação da categoria, caso mude a categoria, checamos no MONGO
-        if(!categoryRepository.existsById(details.getCategoryId())) {
+        if(!categoryRepository.existsById(details.categoryId())) {
             throw new RuntimeException("Nova categoria informada não existe no Mongo");
         }
 
-        //Atualização dos textos
-        existingProduct.setName(details.getName());
-        existingProduct.setCategoryId(details.getCategoryId());
-        existingProduct.setPrice(details.getPrice());
+
 
         if(file != null && !file.isEmpty()) {
             String projectPath = System.getProperty("user.dir");
@@ -114,6 +123,8 @@ public class ProductService {
             existingProduct.setPath(newFileName);
         }
 
-        return productRepository.save(existingProduct);
+        Product updatedProduct = productRepository.save(existingProduct);
+
+        return mapToResponseDTO(updatedProduct);
     }
 }
