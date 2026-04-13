@@ -62,8 +62,12 @@ public class ProductService {
         );
     }
 
-    public List<Product> getProductsByCategory(String categoryId){
-        return productRepository.findByCategoryId(categoryId);
+    public List<ProductResponseDTO> getProductsByCategory(String categoryId){
+        List<Product> products = productRepository.findByCategoryId(categoryId);
+
+        return products.stream()
+                .map(this::mapToResponseDTO)
+                .toList();
     }
 
     public void deleteProduct(Long id) {

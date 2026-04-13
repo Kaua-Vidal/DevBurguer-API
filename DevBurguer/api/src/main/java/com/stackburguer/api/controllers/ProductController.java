@@ -39,12 +39,10 @@ public class ProductController {
     }
 
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> create(
+    public ResponseEntity<ProductResponseDTO> create(
             @RequestPart("product") String productJson,
             @RequestPart("file") MultipartFile file
-    ){
-        try{
-
+    ) throws IOException{
             ProductResponseDTO response = service.createProduct(productJson, file);
 
             URI uri = ServletUriComponentsBuilder
@@ -53,56 +51,33 @@ public class ProductController {
                     .buildAndExpand(response.id())
                     .toUri();
             return ResponseEntity.created(uri).body(response);
-        }catch (IOException er){
-            return ResponseEntity.badRequest().body("Erro no formato dos dados: "+ er.getMessage());
-        } catch( Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro interno inesperado");
-        }
-
-
-
-
     }
 
     @GetMapping("/category/{categoryId}")
-    public List<Product> getByCategoryId(@PathVariable String categoryId){
-        return service.getProductsByCategory(categoryId);
+    public ResponseEntity<List<ProductResponseDTO>> getByCategoryId(@PathVariable String categoryId){
+        List<ProductResponseDTO> products = service.getProductsByCategory(categoryId);
+        return ResponseEntity.ok(products);
     }
 
 
     @DeleteMapping("/{id}")  //Serve para quando for chamar o delete: /products/5, o 5 já vai ser o ID
-    public ResponseEntity<?> delete(@PathVariable Long id){
-        try{
+    public ResponseEntity<Void> delete(@PathVariable Long id) throws RuntimeException{
             //O Service realiza a exclusão
             service.deleteProduct(id);
 
             // No sucesso, retornamos o status 204
             // o .build() cria um ResponseEntity sem corpo
             return ResponseEntity.noContent().build();  //204 No Content
-        } catch(RuntimeException e){
-            //Se o produto não existir, retornamos 404 e uma String com a mensagem
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e){
-            // Caso dê algum outro erro, retornamos 500 e uma string
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar produto.");
-        }
-
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(
+    public ResponseEntity<ProductResponseDTO> update(
             @PathVariable Long id,
             @RequestParam("product") String productJson,
             @RequestParam(value = "file", required = false) MultipartFile file
-    ) {
-        try{
+    ) throws IOException {
             ProductResponseDTO response = service.updateProduct(id, productJson, file);
             return ResponseEntity.ok(response);
-        } catch(IOException er){
-            return ResponseEntity.badRequest().body("Erro ao processar arquivo/JSON: " + er.getMessage());
-        } catch(RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 //
 //
