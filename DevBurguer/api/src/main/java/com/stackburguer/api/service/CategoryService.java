@@ -1,6 +1,7 @@
 package com.stackburguer.api.service;
 
 import com.stackburguer.api.DTO.CategoryRequestDTO;
+import com.stackburguer.api.DTO.CategoryResponseDTO;
 import com.stackburguer.api.models.Category;
 import com.stackburguer.api.repositories.mongo.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,14 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    private CategoryResponseDTO mapToResponseDTO(Category category){
+        return new CategoryResponseDTO(category.getId(), category.getName());
+    }
+
     public List<Category> getAllCategories() {
-        return  categoryRepository.findAll();
+        return categoryRepository.findAll().stream()
+                .map(this::mapToResponseDTO)
+                .toList();
     }
 
     public Category createCategory(CategoryRequestDTO categoryDTO){

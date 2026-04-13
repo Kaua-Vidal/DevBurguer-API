@@ -24,8 +24,12 @@ public class ProductService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public List<Product> getAllProducts(){
-        return productRepository.findAll();
+    public List<ProductResponseDTO> getAllProducts(){
+        List<Product> products = productRepository.findAll();
+
+        return products.stream()
+                .map(this::mapToResponseDTO)
+                .toList();
     }
 
     public ProductResponseDTO createProduct(String productJson, MultipartFile file) throws IOException {
@@ -85,7 +89,11 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public ProductResponseDTO updateProduct(Long id, ProductRequestDTO details, MultipartFile file) throws IOException {
+    public ProductResponseDTO updateProduct(Long id, String productJson, MultipartFile file) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductRequestDTO dto = objectMapper.readValue(productJson, ProductRequestDTO.class);
+
 
         //Pegamos o produto atual que está no banco
         Product existingProduct = productRepository.findById(id)
@@ -93,12 +101,12 @@ public class ProductService {
 
 
         //Atualização dos textos
-        existingProduct.setName(details.name());
-        existingProduct.setPrice(details.price());
-        existingProduct.setCategoryId(details.categoryId());
+        existingProduct.setName(dto.name());
+        existingProduct.setPrice(dto.price());
+        existingProduct.setCategoryId(dto.categoryId());
 
         //Validação da categoria, caso mude a categoria, checamos no MONGO
-        if(!categoryRepository.existsById(details.categoryId())) {
+        if(!categoryRepository.existsById(dto.categoryId())) {
             throw new RuntimeException("Nova categoria informada não existe no Mongo");
         }
 
