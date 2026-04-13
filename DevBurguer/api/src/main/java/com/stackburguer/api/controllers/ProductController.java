@@ -6,6 +6,7 @@ import com.stackburguer.api.DTO.ProductResponseDTO;
 import com.stackburguer.api.DTO.StandardError;
 import com.stackburguer.api.models.Product;
 import com.stackburguer.api.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,6 +41,7 @@ public class ProductController {
 
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ProductResponseDTO> create(
+            @Valid
             @RequestPart("product") String productJson,
             @RequestPart("file") MultipartFile file
     ) throws IOException{

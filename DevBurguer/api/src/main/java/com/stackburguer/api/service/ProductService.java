@@ -37,6 +37,11 @@ public class ProductService {
         ObjectMapper objectMapper = new ObjectMapper();
         ProductRequestDTO requestDto = objectMapper.readValue(productJson, ProductRequestDTO.class);
 
+        if(requestDto.price() <= 0){
+            throw new RuntimeException("O proço do produto deve ser maior que zero.");
+        }
+
+
         Product product = new Product();
         product.setName(requestDto.name());
         product.setPrice(requestDto.price());
@@ -64,6 +69,10 @@ public class ProductService {
 
     public List<ProductResponseDTO> getProductsByCategory(String categoryId){
         List<Product> products = productRepository.findByCategoryId(categoryId);
+
+        if(!categoryRepository.existsById(categoryId)){
+            throw new RuntimeException("Categoria ID " + categoryId + " não encontrada.");
+        }
 
         return products.stream()
                 .map(this::mapToResponseDTO)

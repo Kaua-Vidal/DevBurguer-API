@@ -2,17 +2,14 @@ package com.stackburguer.api.controllers;
 
 import com.stackburguer.api.DTO.CategoryRequestDTO;
 import com.stackburguer.api.DTO.CategoryResponseDTO;
-import com.stackburguer.api.models.Category;
 import com.stackburguer.api.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.yaml.snakeyaml.tokens.ScalarToken;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.List;
 
 @RestController
@@ -24,18 +21,14 @@ public class CategoryController {
 
 
     @GetMapping
-    public ResponseEntity<List<Category>> getAll(){
+    public ResponseEntity<List<CategoryResponseDTO>> getAll(){
         return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
     @PostMapping
-    public ResponseEntity<CategoryResponseDTO> create(@RequestBody CategoryRequestDTO request){
-        Category savedCategory = categoryService.createCategory(request);
+    public ResponseEntity<CategoryResponseDTO> create(@Valid @RequestBody CategoryRequestDTO requestDto){
 
-        CategoryResponseDTO response = new CategoryResponseDTO(
-                savedCategory.getId(),
-                savedCategory.getName()
-        );
+        CategoryResponseDTO response = categoryService.createCategory(requestDto);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -46,8 +39,15 @@ public class CategoryController {
         return ResponseEntity.created(uri).body(response);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryResponseDTO> update(
+            @PathVariable String id,
+            @RequestBody CategoryRequestDTO dto){
+        return ResponseEntity.ok(categoryService.update(id, dto));
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Category> delete(@PathVariable String id){
+    public ResponseEntity<Void> delete(@PathVariable String id){
         categoryService.delete(id);
         return ResponseEntity.noContent().build();
     }

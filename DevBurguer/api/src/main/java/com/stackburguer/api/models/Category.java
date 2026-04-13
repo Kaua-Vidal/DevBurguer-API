@@ -2,7 +2,9 @@ package com.stackburguer.api.models;
 
 
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,6 +15,8 @@ import java.lang.annotation.Documented;
 public class Category {
     @Id
     private String id;
+
+    @NotBlank(message = "O nome da categoria é obrigatório no banco")
     private String name;
 
     public String getId(){ return id; }

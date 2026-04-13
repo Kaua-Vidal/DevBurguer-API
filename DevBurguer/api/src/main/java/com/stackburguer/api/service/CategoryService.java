@@ -19,21 +19,31 @@ public class CategoryService {
         return new CategoryResponseDTO(category.getId(), category.getName());
     }
 
-    public List<Category> getAllCategories() {
+    public List<CategoryResponseDTO> getAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(this::mapToResponseDTO)
                 .toList();
     }
 
-    public Category createCategory(CategoryRequestDTO categoryDTO){
+    public CategoryResponseDTO createCategory(CategoryRequestDTO categoryDTO){
         Category category = new Category();
 
         category.setName(categoryDTO.name());
 
-        return categoryRepository.save(category);
+        return mapToResponseDTO(categoryRepository.save(category)) ;
+    }
+
+    public CategoryResponseDTO update(String id, CategoryRequestDTO dto){
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada."));
+        category.setName(dto.name());
+        return mapToResponseDTO(categoryRepository.save(category));
     }
 
     public void delete(String id) {
+        if (!categoryRepository.existsById(id)){
+            throw new RuntimeException("Categoria não encontrada.");
+        }
         categoryRepository.deleteById(id);
     }
 }
