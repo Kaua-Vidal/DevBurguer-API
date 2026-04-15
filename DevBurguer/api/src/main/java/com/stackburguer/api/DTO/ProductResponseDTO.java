@@ -5,5 +5,7 @@ public record ProductResponseDTO (
     String name,
     Double price,
     String imageUrl,
-    String categoryId
+    String categoryId,
+    String url,
+    boolean offer
 ) {}

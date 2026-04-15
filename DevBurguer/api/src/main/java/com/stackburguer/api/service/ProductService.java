@@ -57,13 +57,15 @@ public class ProductService {
 
     }
     private ProductResponseDTO mapToResponseDTO(Product product){
-        String fullUrl = "http://localhost:8080/uploads/" + product.getPath();
+        String fullUrl = "http://localhost:8080/product-file/" + product.getPath();
         return new ProductResponseDTO(
                 product.getId(),
                 product.getName(),
                 product.getPrice(),
+                product.getPath(),
                 fullUrl,
-                product.getCategoryId()
+                product.getCategoryId(),
+                product.isOffer()
         );
     }
 

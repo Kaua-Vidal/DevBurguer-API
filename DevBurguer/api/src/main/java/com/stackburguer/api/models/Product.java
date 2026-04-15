@@ -26,4 +26,6 @@ public class Product {
     private double price;
 
     private String path;
+
+    private boolean offer = false;
 }
