@@ -5,13 +5,19 @@ import com.stackburguer.api.DTO.UserResponseDTO;
 import com.stackburguer.api.models.User;
 import com.stackburguer.api.repositories.jpa.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private UserResponseDTO mapToResponseDTO(User user){
         return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.isAdmin());
@@ -27,8 +33,8 @@ public class UserService {
         user.setName(dto.name());
         user.setAdmin(false);
 
-        //TODO: Utilizar o bcrypt aqui
-        user.setPassword(dto.password());
+        String hash = passwordEncoder.encode(dto.password());
+        user.setPassword(hash); //Passando o password já criptografado
 
         User savedUser = userRepository.save(user);
         return new UserResponseDTO(savedUser.getId(), savedUser.getName(), savedUser.getName(), savedUser.isAdmin());
