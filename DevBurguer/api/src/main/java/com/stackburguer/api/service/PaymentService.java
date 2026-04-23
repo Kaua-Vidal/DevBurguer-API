@@ -36,6 +36,7 @@ public class PaymentService {
                 .collect(Collectors.toList());
 
         SessionCreateParams params = SessionCreateParams.builder()
+                .setClientReferenceId(order.id())
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .setSuccessUrl("http://localhost:5173/success")

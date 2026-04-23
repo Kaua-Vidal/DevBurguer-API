@@ -7,6 +7,7 @@ import com.stackburguer.api.models.User;
 import com.stackburguer.api.service.OrderService;
 import com.stackburguer.api.service.PaymentService;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Event;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -68,8 +69,9 @@ public class OrderController {
             @RequestBody String payload,
             @RequestHeader("Stripe-Signature") String sigHeader
     ){
-        System.out.println("Opa! O stripe bateu na porta");
+        orderService.processStripeWebhook(payload, sigHeader);
 
         return ResponseEntity.ok().build();
     }
+
 }

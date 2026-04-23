@@ -8,7 +8,12 @@ import com.stackburguer.api.models.order.ProductItem;
 import com.stackburguer.api.models.order.UserSummary;
 import com.stackburguer.api.repositories.jpa.ProductRepository;
 import com.stackburguer.api.repositories.mongo.OrderRepository;
+import com.stripe.exception.SignatureVerificationException;
+import com.stripe.model.Event;
+import com.stripe.model.checkout.Session;
+import com.stripe.net.Webhook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +26,9 @@ public class OrderService {
 
     @Autowired
     private ProductRepository productRepository;  //Interface que conversa com o Postgres
+
+    @Value("${stripe.webhook.secret}")
+    private String endpointSecret;
 
     public OrderResponseDTO createOrder(OrderRequestDTO dto, User user){
         List<ProductItem> items = dto.products().stream().map(itemRequest -> {
@@ -72,5 +80,26 @@ public class OrderService {
 
         order.setStatus(status);
         return mapToResponseDTO(orderRepository.save(order));
+    }
+
+    public void processStripeWebhook(String payload, String sigHeader){
+        Event event;
+
+        try {
+            event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
+        } catch (SignatureVerificationException e){
+            throw new RuntimeException("Assinatura do Webhook inválida");
+        }
+
+        if("checkout.session.completed".equals(event.getType())){
+            Session session = (Session) event.getDataObjectDeserializer().getObject()
+                    .orElseThrow(() -> new RuntimeException("Não foi possível ler os dados da sessão"));
+
+            String orderId = session.getClientReferenceId();
+
+            if (orderId != null){
+                this.updateStatus(orderId, "Pago");
+            }
+        }
     }
 }
