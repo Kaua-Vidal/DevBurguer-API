@@ -1,4 +1,4 @@
-package com.stackburguer.api.DTO;
+package com.stackburguer.api.DTO.category;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

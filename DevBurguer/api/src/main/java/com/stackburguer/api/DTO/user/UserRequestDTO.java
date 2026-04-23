@@ -1,4 +1,4 @@
-package com.stackburguer.api.DTO;
+package com.stackburguer.api.DTO.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

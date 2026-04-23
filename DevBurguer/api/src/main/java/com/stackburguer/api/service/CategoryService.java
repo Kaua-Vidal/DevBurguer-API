@@ -1,7 +1,7 @@
 package com.stackburguer.api.service;
 
-import com.stackburguer.api.DTO.CategoryRequestDTO;
-import com.stackburguer.api.DTO.CategoryResponseDTO;
+import com.stackburguer.api.DTO.category.CategoryRequestDTO;
+import com.stackburguer.api.DTO.category.CategoryResponseDTO;
 import com.stackburguer.api.models.Category;
 import com.stackburguer.api.repositories.mongo.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,11 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 
     private CategoryResponseDTO mapToResponseDTO(Category category){
-        return new CategoryResponseDTO(category.getId(), category.getName());
+        String path = category.getPath();
+
+        String url = "http://localhost:8080/category-file/" + path;
+
+        return new CategoryResponseDTO(category.getId(), category.getName(), url, path);
     }
 
     public List<CategoryResponseDTO> getAllCategories() {

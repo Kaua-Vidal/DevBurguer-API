@@ -1,7 +1,7 @@
 package com.stackburguer.api.controllers;
 
-import com.stackburguer.api.DTO.UserRequestDTO;
-import com.stackburguer.api.DTO.UserResponseDTO;
+import com.stackburguer.api.DTO.user.UserRequestDTO;
+import com.stackburguer.api.DTO.user.UserResponseDTO;
 import com.stackburguer.api.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

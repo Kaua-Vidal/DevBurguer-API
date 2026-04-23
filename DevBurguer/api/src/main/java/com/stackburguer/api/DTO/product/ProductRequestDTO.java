@@ -1,5 +1,6 @@
-package com.stackburguer.api.DTO;
+package com.stackburguer.api.DTO.product;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -13,6 +14,12 @@ public record ProductRequestDTO (
         Double price,
 
         @NotBlank(message = "A categoria é obrigatória")
-        String categoryId
+        String categoryId,
+
+        @NotNull
+        Long id,
+
+        @Min(1)
+        int quantity
 ) {
 }

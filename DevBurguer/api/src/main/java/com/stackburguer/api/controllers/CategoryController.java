@@ -1,7 +1,7 @@
 package com.stackburguer.api.controllers;
 
-import com.stackburguer.api.DTO.CategoryRequestDTO;
-import com.stackburguer.api.DTO.CategoryResponseDTO;
+import com.stackburguer.api.DTO.category.CategoryRequestDTO;
+import com.stackburguer.api.DTO.category.CategoryResponseDTO;
 import com.stackburguer.api.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.stackburguer.api.DTO;
+package com.stackburguer.api.DTO.category;
 
 public record CategoryResponseDTO (
         String id,

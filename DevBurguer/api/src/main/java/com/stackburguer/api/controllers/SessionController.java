@@ -1,10 +1,11 @@
 package com.stackburguer.api.controllers;
 
-import com.stackburguer.api.DTO.LoginRequestDTO;
-import com.stackburguer.api.DTO.LoginResponseDTO;
+import com.stackburguer.api.DTO.login.LoginRequestDTO;
+import com.stackburguer.api.DTO.login.LoginResponseDTO;
 import com.stackburguer.api.models.User;
 import com.stackburguer.api.service.TokenService;
 import com.stackburguer.api.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class SessionController {
     private TokenService tokenService;
 
     @PostMapping
-    public ResponseEntity<?> login(@RequestBody LoginRequestDTO data){
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO data){
 
         //Buscando o usuário
         User user = userService.findByEmail(data.email());

@@ -1,4 +1,4 @@
-package com.stackburguer.api.DTO;
+package com.stackburguer.api.DTO.login;
 
 import java.util.UUID;
 

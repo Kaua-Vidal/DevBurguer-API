@@ -1,10 +1,7 @@
 package com.stackburguer.api.controllers;
 
 
-import com.stackburguer.api.DTO.ProductRequestDTO;
-import com.stackburguer.api.DTO.ProductResponseDTO;
-import com.stackburguer.api.DTO.StandardError;
-import com.stackburguer.api.models.Product;
+import com.stackburguer.api.DTO.product.ProductResponseDTO;
 import com.stackburguer.api.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")  //todas minhas rotas começam com /products
+@RequestMapping("/product")  //todas minhas rotas começam com /products
 public class ProductController {
 
     @Autowired

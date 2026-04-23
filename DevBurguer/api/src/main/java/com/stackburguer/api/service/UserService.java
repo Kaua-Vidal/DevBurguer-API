@@ -1,7 +1,7 @@
 package com.stackburguer.api.service;
 
-import com.stackburguer.api.DTO.UserRequestDTO;
-import com.stackburguer.api.DTO.UserResponseDTO;
+import com.stackburguer.api.DTO.user.UserRequestDTO;
+import com.stackburguer.api.DTO.user.UserResponseDTO;
 import com.stackburguer.api.models.User;
 import com.stackburguer.api.repositories.jpa.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

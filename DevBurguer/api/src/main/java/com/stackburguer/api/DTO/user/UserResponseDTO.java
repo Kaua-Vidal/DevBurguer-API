@@ -1,6 +1,4 @@
-package com.stackburguer.api.DTO;
-
-import jakarta.persistence.Id;
+package com.stackburguer.api.DTO.user;
 
 import java.util.UUID;
 

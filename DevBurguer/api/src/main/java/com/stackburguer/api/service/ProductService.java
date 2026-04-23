@@ -1,8 +1,7 @@
 package com.stackburguer.api.service;
 
-import com.stackburguer.api.DTO.ProductRequestDTO;
-import com.stackburguer.api.DTO.ProductResponseDTO;
-import com.stackburguer.api.exceptions.CategoryNotFoundException;
+import com.stackburguer.api.DTO.product.ProductRequestDTO;
+import com.stackburguer.api.DTO.product.ProductResponseDTO;
 import com.stackburguer.api.models.Product;
 import com.stackburguer.api.repositories.jpa.ProductRepository;
 import com.stackburguer.api.repositories.mongo.CategoryRepository;
