@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import com.stripe.Stripe;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "com.stackburguer.api.repositories.jpa")  //onde está o repo do Postgres

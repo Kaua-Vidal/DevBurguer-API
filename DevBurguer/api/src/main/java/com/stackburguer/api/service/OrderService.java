@@ -8,13 +8,12 @@ import com.stackburguer.api.models.order.ProductItem;
 import com.stackburguer.api.models.order.UserSummary;
 import com.stackburguer.api.repositories.jpa.ProductRepository;
 import com.stackburguer.api.repositories.mongo.OrderRepository;
-import com.stripe.exception.SignatureVerificationException;
-import com.stripe.model.Event;
-import com.stripe.model.checkout.Session;
-import com.stripe.net.Webhook;
+import com.stripe.exception.StripeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -27,23 +26,26 @@ public class OrderService {
     @Autowired
     private ProductRepository productRepository;  //Interface que conversa com o Postgres
 
+    @Autowired
+    private PaymentService paymentService;
+
     @Value("${stripe.webhook.secret}")
     private String endpointSecret;
 
-    public OrderResponseDTO createOrder(OrderRequestDTO dto, User user){
+    public OrderResponseDTO createOrder(OrderRequestDTO dto, User user) throws StripeException {
         List<ProductItem> items = dto.products().stream().map(itemRequest -> {
-                    var product = productRepository.findById(itemRequest.id())
-                            .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + itemRequest.id()));
+            var product = productRepository.findById(itemRequest.id())
+                    .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + itemRequest.id()));
 
-                    return new ProductItem(
-                            product.getId(),
-                            product.getName(),
-                            product.getPrice(),
-                            product.getCategoryId(),
-                            "http://localhost:8080/product-file/" + product.getPath(),
-                            itemRequest.quantity()
-                    );
-                }).toList();
+            return new ProductItem(
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    product.getCategoryId(),
+                    "http://localhost:8080/product-file/" + product.getPath(),
+                    itemRequest.quantity()
+            );
+        }).toList();
 
         UserSummary userSummary = new UserSummary(user.getId().toString(), user.getName());
 
@@ -54,52 +56,69 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        return mapToResponseDTO(savedOrder);
+        OrderResponseDTO initialResponse = mapToResponseDTO(order, null);
+        String url = paymentService.createCheckoutSession(initialResponse);
+
+        return mapToResponseDTO(savedOrder, url);
     }
 
-    public List<OrderResponseDTO> getAllOrders(){
+    public List<OrderResponseDTO> getAllOrders() {
         return orderRepository.findAll().stream()
-                .map(this::mapToResponseDTO)
+                .map(order -> mapToResponseDTO(order, null))
                 .toList();
     }
 
-    private OrderResponseDTO mapToResponseDTO(Order order){
+    private OrderResponseDTO mapToResponseDTO(Order order, String paymentUrl) {
         return new OrderResponseDTO(
                 order.getId(),
                 order.getUser(),
                 order.getProducts(),
                 order.getStatus(),
                 order.getCreatedAt(),
-                null
+                paymentUrl
         );
     }
 
-    public OrderResponseDTO updateStatus(String id, String status){
+    public OrderResponseDTO updateStatus(String id, String status) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Pedido não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
         order.setStatus(status);
-        return mapToResponseDTO(orderRepository.save(order));
+        return mapToResponseDTO(orderRepository.save(order), null);
     }
 
-    public void processStripeWebhook(String payload, String sigHeader){
-        Event event;
 
+    public void processStripeWebhook(String payload, String sigHeader) {
         try {
-            event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
-        } catch (SignatureVerificationException e){
-            throw new RuntimeException("Assinatura do Webhook inválida");
-        }
+            // 1. Usamos o Jackson (que o Spring já tem) para ler o texto bruto
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(payload);
 
-        if("checkout.session.completed".equals(event.getType())){
-            Session session = (Session) event.getDataObjectDeserializer().getObject()
-                    .orElseThrow(() -> new RuntimeException("Não foi possível ler os dados da sessão"));
+            // 2. Pegamos o tipo do evento do JSON
+            String eventType = root.path("type").asText();
+            System.out.println("DEBUG: Evento recebido via Jackson: " + eventType);
 
-            String orderId = session.getClientReferenceId();
+            if ("checkout.session.completed".equals(eventType)) {
+                // 3. Navegamos no JSON: data -> object -> client_reference_id
+                JsonNode sessionNode = root.path("data").path("object");
+                String orderId = sessionNode.path("client_reference_id").asText();
 
-            if (orderId != null){
-                this.updateStatus(orderId, "Pago");
+                System.out.println("DEBUG: ID extraído manualmente: " + orderId);
+
+                // Verificamos se o ID não é nulo ou a string "null" (que o Jackson às vezes retorna)
+                if (orderId != null && !orderId.isEmpty() && !orderId.equals("null")) {
+                    this.updateStatus(orderId, "Pago");
+                    System.out.println("SUCESSO: Pedido " + orderId + " atualizado para Pago.");
+                } else {
+                    System.err.println("ALERTA: O client_reference_id não foi encontrado no JSON!");
+                }
+            } else {
+                System.out.println("Evento " + eventType + " ignorado.");
             }
+
+        } catch (Exception e) {
+            System.err.println("ERRO ao processar JSON manualmente: " + e.getMessage());
+            throw new RuntimeException("Falha no processamento do Webhook", e);
         }
     }
 }

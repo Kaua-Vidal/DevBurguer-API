@@ -24,6 +24,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/orders/webhook"))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
@@ -34,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/orders/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/category/**").permitAll()
+
                         .anyRequest().authenticated()  //O Resto precisa estar logado
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
