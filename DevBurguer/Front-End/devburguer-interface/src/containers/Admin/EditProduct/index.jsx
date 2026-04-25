@@ -59,6 +59,20 @@ export function EditProduct() {
     productFormData.append('file', data.file[0])
     productFormData.append('offer', data.offer)
 
+    const updateProduct = async () => {
+      await api.put(`/product/${product.id}`, {
+        name: data.name,
+        price: data.price,
+        category: data.category.id,
+        offer: data.offer
+      })
+
+      if(data.file && data.file.length > 0){
+        const imageFormData = new FormData()
+        imageFormData.append('file', data.file[0])
+        await api.post(`/product/uploads/${product.id}`, imageFormData)
+      }
+    }
 
     await toast.promise( api.put(`/products/${product.id}`, productFormData), {
       pending: 'Editando o produto...',

@@ -23,6 +23,12 @@ public class ProductService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    private final S3Service s3Service;
+
+    public ProductService(S3Service s3Service){
+        this.s3Service = s3Service;
+    }
+
     public List<ProductResponseDTO> getAllProducts(){
         List<Product> products = productRepository.findAll();
 
@@ -148,5 +154,17 @@ public class ProductService {
         Product updatedProduct = productRepository.save(existingProduct);
 
         return mapToResponseDTO(updatedProduct);
+    }
+
+    public String updateProductImage(Long productId, MultipartFile file){
+        String fileUrl = s3Service.uploadFile(file);
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado com o ID: " + productId));
+
+        product.setPath(fileUrl);
+
+        productRepository.save(product);
+        return fileUrl;
     }
 }

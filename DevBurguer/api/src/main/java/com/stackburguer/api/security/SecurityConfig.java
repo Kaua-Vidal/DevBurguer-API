@@ -32,9 +32,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/sessions").permitAll()  //Login livre
                         .requestMatchers(HttpMethod.POST, "/orders/webhook").permitAll()
                         .requestMatchers(HttpMethod.POST, "/product/**").hasRole("ADMIN")   //Somente ADMIN cria produto
+                        .requestMatchers(HttpMethod.POST, "/product/uploads").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/orders/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/category/**").permitAll()
+
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
 
                         .anyRequest().authenticated()  //O Resto precisa estar logado
                 )

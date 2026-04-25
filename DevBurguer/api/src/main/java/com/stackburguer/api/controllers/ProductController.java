@@ -3,6 +3,8 @@ package com.stackburguer.api.controllers;
 
 import com.stackburguer.api.DTO.product.ProductResponseDTO;
 import com.stackburguer.api.service.ProductService;
+import com.stackburguer.api.service.S3Service;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,12 @@ public class ProductController {
 
     @Autowired
     private ProductService service;
+
+    private final S3Service s3Service;
+
+    public ProductController(S3Service s3Service){
+        this.s3Service = s3Service;
+    }
 
     @GetMapping
     public ResponseEntity<?> getAll(){
@@ -77,42 +85,19 @@ public class ProductController {
             ProductResponseDTO response = service.updateProduct(id, productJson, file);
             return ResponseEntity.ok(response);
     }
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//    throws IOException {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        ProductRequestDTO productDetails = objectMapper.readValue(productJson, ProductRequestDTO.class);
-//
-//        ProductResponseDTO response = service.updateProduct(id, productDetails, file);
-//
-//        URI uri = ServletUriComponentsBuilder
-//                .fromCurrentRequest()  //onde estoua aogra?
-//                .path("/{id}")  // o quero adicionar (ID)?
-//                .buildAndExpand(response.id())
-//                .toUri();
-//
-//        return ResponseEntity.created(uri).body(response);
-//    }
+
+    @PostMapping("/uploads")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file){
+        String fileUrl = s3Service.uploadFile(file);
+        return ResponseEntity.ok(fileUrl);
+    }
+
+    @Operation(summary = "Upload de imagem do produto")
+    @PostMapping(value = "/uploads/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadImage(@PathVariable Long id, @RequestParam("file") MultipartFile file){
+        String imageUrl = service.updateProductImage(id, file);
+
+        return ResponseEntity.ok(imageUrl);
+    }
+
 }
