@@ -54,14 +54,22 @@ export function NewProduct() {
     (Append) -> Serve para adicionar itens ao FormData
       * */}
   const onSubmit = async (data) => {
-    const productFormData = new FormData()
+    const createProduct = async () => {
 
-    productFormData.append('name', data.name)
-    productFormData.append('price', data.price)
-    productFormData.append('category_id', data.category.id)
-    productFormData.append('file', data.file[0])
-    productFormData.append('offer', data.offer)
+      const { data: response} = await api.post('/product', {
+        name: data.name,
+        price: data.price,
+        category: data.category.id,
+        offer: data.offer
+      })
 
+      if (data.file && data.file.length > 0) {
+        const productFormData = new FormData()
+        productFormData.append('file', data.file[0])
+
+        await api.post(`/products/uploads/${response.id}`, productFormData)
+      }
+    }
 
     await toast.promise( api.post('/products', productFormData), {
       pending: 'Adicionando o produto...',

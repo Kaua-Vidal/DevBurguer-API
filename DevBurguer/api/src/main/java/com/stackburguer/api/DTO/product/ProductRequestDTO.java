@@ -1,5 +1,6 @@
 package com.stackburguer.api.DTO.product;
 
+import com.stackburguer.api.models.Category;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +21,8 @@ public record ProductRequestDTO (
         Long id,
 
         @Min(1)
-        int quantity
+        int quantity,
+
+        Boolean offer
 ) {
 }

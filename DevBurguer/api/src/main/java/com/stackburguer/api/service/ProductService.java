@@ -2,9 +2,10 @@ package com.stackburguer.api.service;
 
 import com.stackburguer.api.DTO.product.ProductRequestDTO;
 import com.stackburguer.api.DTO.product.ProductResponseDTO;
+import com.stackburguer.api.models.Category;
 import com.stackburguer.api.models.Product;
 import com.stackburguer.api.repositories.jpa.ProductRepository;
-import com.stackburguer.api.repositories.mongo.CategoryRepository;
+import com.stackburguer.api.repositories.jpa.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +13,10 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Service
@@ -37,6 +42,31 @@ public class ProductService {
                 .toList();
     }
 
+    public String saveFile(MultipartFile file) {
+        try {
+            // 1. Definimos que a pasta alvo é a "uploads" na raiz do projeto
+            Path root = Paths.get("uploads");
+
+            // 2. Criamos a pasta caso ela não exista (importante para o primeiro upload)
+            if (!Files.exists(root)) {
+                Files.createDirectories(root);
+            }
+
+            // 3. Geramos o nome do arquivo (pode usar o seu timestamp se quiser)
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path destination = root.resolve(fileName);
+
+            // 4. Salvamos o arquivo fisicamente na pasta uploads
+            Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+
+            // Retornamos apenas o NOME do arquivo para salvar no banco
+            return fileName;
+
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao processar arquivo", e);
+        }
+    }
+
     public ProductResponseDTO createProduct(String productJson, MultipartFile file) throws IOException {
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -46,15 +76,17 @@ public class ProductService {
             throw new RuntimeException("O proço do produto deve ser maior que zero.");
         }
 
+        Category category = categoryRepository.findById(requestDto.categoryId())
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada!"));
+
 
         Product product = new Product();
         product.setName(requestDto.name());
         product.setPrice(requestDto.price());
-        product.setCategoryId(requestDto.categoryId());
+        product.setCategory(category);
+        product.setOffer(requestDto.offer() != null ? requestDto.offer() : false);
 
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        String uploadDir = System.getProperty("user.dir") + File.separator + "src" + "/main/resources/static/uploads/";
-        file.transferTo(new File(uploadDir + fileName));
+        String fileName = saveFile(file);
         product.setPath(fileName);
 
         Product savedProduct = productRepository.save(product);
@@ -62,16 +94,7 @@ public class ProductService {
 
     }
     private ProductResponseDTO mapToResponseDTO(Product product){
-        String fullUrl = "http://localhost:8080/product-file/" + product.getPath();
-        return new ProductResponseDTO(
-                product.getId(),
-                product.getName(),
-                product.getPrice(),
-                product.getPath(),
-                fullUrl,
-                product.getCategoryId(),
-                product.isOffer()
-        );
+        return new ProductResponseDTO(product);
     }
 
     public List<ProductResponseDTO> getProductsByCategory(String categoryId){
@@ -119,16 +142,15 @@ public class ProductService {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
+        Category category = categoryRepository.findById(dto.categoryId())
+                .orElseThrow(() -> new RuntimeException("A categoria informada não existe no banco"));
 
         //Atualização dos textos
         existingProduct.setName(dto.name());
         existingProduct.setPrice(dto.price());
-        existingProduct.setCategoryId(dto.categoryId());
+        existingProduct.setCategory(category);
+        existingProduct.setOffer(dto.offer());
 
-        //Validação da categoria, caso mude a categoria, checamos no MONGO
-        if(!categoryRepository.existsById(dto.categoryId())) {
-            throw new RuntimeException("Nova categoria informada não existe no Mongo");
-        }
 
 
 

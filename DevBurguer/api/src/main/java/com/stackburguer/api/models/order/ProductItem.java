@@ -1,10 +1,12 @@
 package com.stackburguer.api.models.order;
 
+import com.stackburguer.api.models.Category;
+
 public record ProductItem(
         Long id,
         String name,
         Double price,
-        String category,
+        Category category,
         String url,  //Link da imagem para o front
         int quantity
 ){}

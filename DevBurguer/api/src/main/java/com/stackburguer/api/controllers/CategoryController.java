@@ -2,18 +2,20 @@ package com.stackburguer.api.controllers;
 
 import com.stackburguer.api.DTO.category.CategoryRequestDTO;
 import com.stackburguer.api.DTO.category.CategoryResponseDTO;
+import com.stackburguer.api.models.Category;
 import com.stackburguer.api.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/categories")
 public class CategoryController {
 
     @Autowired
@@ -44,6 +46,12 @@ public class CategoryController {
             @PathVariable String id,
             @RequestBody CategoryRequestDTO dto){
         return ResponseEntity.ok(categoryService.update(id, dto));
+    }
+
+    @PostMapping("/categories/uploads/{id}")
+    public ResponseEntity<Category> uploadImage(@PathVariable String id, @RequestParam("file")MultipartFile file){
+        Category updatedCategory = categoryService.uploadImage(id, file);
+        return ResponseEntity.ok(updatedCategory);
     }
 
     @DeleteMapping("/{id}")

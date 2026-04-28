@@ -53,7 +53,7 @@ export function Register() {
 
     try {
       const { status } = 
-      await api.post('/users', {
+      await api.post('/user', {
         name: data.name,
         email: data.email,
         password: data.password,

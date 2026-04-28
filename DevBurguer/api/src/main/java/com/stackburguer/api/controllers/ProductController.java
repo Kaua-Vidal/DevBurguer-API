@@ -4,7 +4,6 @@ package com.stackburguer.api.controllers;
 import com.stackburguer.api.DTO.product.ProductResponseDTO;
 import com.stackburguer.api.service.ProductService;
 import com.stackburguer.api.service.S3Service;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +18,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/product")  //todas minhas rotas começam com /products
+@RequestMapping("/products")  //todas minhas rotas começam com /products
 public class ProductController {
 
     @Autowired
@@ -92,8 +91,7 @@ public class ProductController {
         return ResponseEntity.ok(fileUrl);
     }
 
-    @Operation(summary = "Upload de imagem do produto")
-    @PostMapping(value = "/uploads/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping("/uploads/{id}")
     public ResponseEntity<String> uploadImage(@PathVariable Long id, @RequestParam("file") MultipartFile file){
         String imageUrl = service.updateProductImage(id, file);
 

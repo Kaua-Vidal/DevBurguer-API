@@ -15,8 +15,10 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)   // Auto-incremento
     private Long id;
 
-    @NotBlank(message = "O ID da cateogria é obrigatório")
-    private String categoryId;
+    @NotNull(message = "O ID da cateogria é obrigatório")
+    @ManyToOne
+    @JoinColumn(name = "category_id") //nome da coluna no banco SQL
+    private Category category;
 
     @NotBlank(message = "O nome do produto não pode ser nulo no banco")
     private String name;

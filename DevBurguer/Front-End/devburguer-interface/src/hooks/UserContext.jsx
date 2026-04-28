@@ -8,7 +8,7 @@ export const UserProvider = ({ children }) => {
   const putUserData = (userInfo) => {
     setUserInfo(userInfo);
 
-    localStorage.setItem('devburguer:userData', JSON.stringify(userInfo));
+    localStorage.setItem('stackburguer:userData', JSON.stringify(userInfo));
   };
 
   const logout = () => {

@@ -3,9 +3,10 @@ package com.stackburguer.api.service;
 import com.stackburguer.api.DTO.category.CategoryRequestDTO;
 import com.stackburguer.api.DTO.category.CategoryResponseDTO;
 import com.stackburguer.api.models.Category;
-import com.stackburguer.api.repositories.mongo.CategoryRepository;
+import com.stackburguer.api.repositories.jpa.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,6 +15,9 @@ public class CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private S3Service s3Service;
 
     private CategoryResponseDTO mapToResponseDTO(Category category){
         String path = category.getPath();
@@ -35,6 +39,16 @@ public class CategoryService {
         category.setName(categoryDTO.name());
 
         return mapToResponseDTO(categoryRepository.save(category)) ;
+    }
+
+    public Category uploadImage(String id, MultipartFile file){
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Categoria não existe."));
+
+        String fileName = s3Service.uploadFile(file);
+
+        category.setPath(fileName);
+        return categoryRepository.save(category);
     }
 
     public CategoryResponseDTO update(String id, CategoryRequestDTO dto){

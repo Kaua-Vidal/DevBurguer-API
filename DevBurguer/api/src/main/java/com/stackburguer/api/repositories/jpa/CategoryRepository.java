@@ -1,4 +1,4 @@
-package com.stackburguer.api.repositories.mongo;
+package com.stackburguer.api.repositories.jpa;
 
 import com.stackburguer.api.models.Category;
 import org.springframework.data.jpa.repository.JpaRepository;

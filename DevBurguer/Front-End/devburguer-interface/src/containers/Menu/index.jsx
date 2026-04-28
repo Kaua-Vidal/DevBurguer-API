@@ -22,9 +22,9 @@ export function Menu() {
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
 
-                                            //Função inicializadora -> Só executada 1 vez
+  //Função inicializadora -> Só executada 1 vez
   const [activeCategory, setActiveCategory] = useState(() => {
-    const categoryId = +queryParams.get('categoria');
+    const categoryId = queryParams.get('categoria');
 
     if (categoryId) {
       return categoryId;
@@ -57,12 +57,21 @@ export function Menu() {
   }, []);
 
   useEffect(() => {
-  if (products.length === 0) return;
+    if (products.length === 0) return;
 
-  //0 -> Categoria TODOS -> Já carrega direto
-  if (activeCategory === 0) setFilteredProducts(products);
-  else setFilteredProducts(products.filter(p => p.category_id === activeCategory));
-}, [products, activeCategory]);
+    //0 -> Categoria TODOS -> Já carrega direto
+    if (activeCategory === 0) {
+      setFilteredProducts(products);
+    } else {
+      const filtered = products.filter(p => {
+        const productCategoryId = String(p.categoryId?.id || '').trim().toLowerCase();
+        const currentActiveId = String(activeCategory || '').trim().toLowerCase();
+        console.log(`Comparando: [${productCategoryId}] com [${currentActiveId}]`);
+        return productCategoryId === currentActiveId;
+      });
+      setFilteredProducts(filtered);
+    }
+  }, [products, activeCategory]);
 
   return (
     <Container>
@@ -88,10 +97,10 @@ export function Menu() {
             onClick={() => {
               setActiveCategory(category.id)
             }}
-            
+
           >
             {category.name}
-            
+
           </CategoryButton>
         ))}
       </CategoryMenu>
@@ -102,7 +111,7 @@ export function Menu() {
         ))}
       </ProductsContainer>
 
-      
+
     </Container>
   );
 }

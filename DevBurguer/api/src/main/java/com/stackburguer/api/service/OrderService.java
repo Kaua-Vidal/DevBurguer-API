@@ -41,7 +41,7 @@ public class OrderService {
                     product.getId(),
                     product.getName(),
                     product.getPrice(),
-                    product.getCategoryId(),
+                    product.getCategory(),
                     "http://localhost:8080/product-file/" + product.getPath(),
                     itemRequest.quantity()
             );

@@ -2,18 +2,16 @@ package com.stackburguer.api.models;
 
 
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
-import lombok.NonNull;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.lang.annotation.Documented;
 
-@Document(collection = "categories")  //Nome da "tabela" no mongo
-@Data
+@Entity
+@Table(name = "categories")
 public class Category {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @NotBlank(message = "O nome da categoria é obrigatório no banco")
