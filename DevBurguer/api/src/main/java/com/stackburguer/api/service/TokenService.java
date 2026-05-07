@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.stackburguer.api.exceptions.GeneratingTokenErrorException;
 import com.stackburguer.api.models.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class TokenService {
                     .withExpiresAt(getExpirationDate())
                     .sign(algorithm);
         } catch(JWTCreationException exception){
-            throw new RuntimeException("Erro ao gerar token", exception);
+            throw new GeneratingTokenErrorException("Erro ao gerar token");
         }
     }
 

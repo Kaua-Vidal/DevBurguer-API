@@ -3,7 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { ImageIcon } from "@phosphor-icons/react"
 
-import { Container, Form, InputGroup, Label, Input, LabelUpload, Select, SubmitButton, ErrorMessage, ContainerCheckbox} from './styles'
+import { Container, Form, InputGroup, Label, Input, LabelUpload, Select, SubmitButton, ErrorMessage, ContainerCheckbox } from './styles'
 import { useEffect, useState } from "react"
 import { api } from "../../../services/api"
 import { toast } from "react-toastify"
@@ -18,7 +18,7 @@ const schema = yup
     file: yup.mixed().test('required', 'Escolha um arquivo para continuar', value => {
       return value && value.length > 0
     }).test('fileSize', 'Carregue arquivos até 5mb', value => {
-      return value && value.length>0 && value[0].size <= 5 * 1024 * 1024;
+      return value && value.length > 0 && value[0].size <= 5 * 1024 * 1024;
     }).test('type', 'Carregue apenas imagens PNG ou JPEG', value => {
       return value && value.length > 0 && (value[0].type === "image/jpeg" || value[0].type === 'image/png')
     }),
@@ -29,125 +29,129 @@ export function NewProduct() {
   const [fileName, setFileName] = useState(null);
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
-  useEffect (() => {
+  useEffect(() => {
     async function loadCategories() {
-      const {data} = await api.get('/categories');
+      const { data } = await api.get('/categories');
       setCategories(data)
     }
     loadCategories()
   }, [])
 
-    const {
-        register,
-        handleSubmit,
-        control,
-        formState: { errors },
-    } = useForm({
-        resolver: yupResolver(schema),
-    })
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  })
 
 
-    {/*
+  {/*
       (FormData) -> Ferramente nativa do JS. 
       Organiza os arquivos para enviar para o Back-End
 
     (Append) -> Serve para adicionar itens ao FormData
       * */}
   const onSubmit = async (data) => {
-    const createProduct = async () => {
 
-      const { data: response} = await api.post('/product', {
+    try {
+      const productFormData = new FormData();
+
+      const productData = {
         name: data.name,
         price: data.price,
-        category: data.category.id,
-        offer: data.offer
-      })
+        categoryId: data.category.id,
+        offer: data.offer,
+        quantity: 0
+      }
+
+      productFormData.append('product', JSON.stringify(productData));
 
       if (data.file && data.file.length > 0) {
-        const productFormData = new FormData()
         productFormData.append('file', data.file[0])
-
-        await api.post(`/products/uploads/${response.id}`, productFormData)
       }
+
+      await toast.promise(api.post('/products', productFormData), {
+        pending: 'Adicionando o produto...',
+        success: 'Produto criado com sucesso',
+        error: 'Falha ao adicionar o produto, tente novamente'
+      });
+
+      setTimeout(() => {
+        navigate('/admin/produtos')
+      }, 2000);
+    } catch (err) {
+      console.error("Erro ao criar produto:", err);
     }
-
-    await toast.promise( api.post('/products', productFormData), {
-      pending: 'Adicionando o produto...',
-      success: 'Produto criado com sucesso',
-      error: 'Falha ao adicionar o produto, tente novamente'
-    });
-
-    setTimeout(() => {
-      navigate('/admin/produtos')
-    }, 2000)
   }
 
-    return (
-        <Container>
-             <Form onSubmit={handleSubmit(onSubmit)}>
-                <InputGroup>
-                  <Label>Nome</Label>
-                  <Input type='text' {...register('name')} />
-                  <ErrorMessage>{errors?.name?.message}</ErrorMessage>
-                </InputGroup>
+  return (
+    <Container>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <InputGroup>
+          <Label>Nome</Label>
+          <Input type='text' {...register('name')} />
+          <ErrorMessage>{errors?.name?.message}</ErrorMessage>
+        </InputGroup>
 
-                <InputGroup>
-                  <Label>Preço</Label>
-                  <Input type='number' {...register('price')}/>
-                  <ErrorMessage>{errors?.price?.message}</ErrorMessage>
-                </InputGroup>
+        <InputGroup>
+          <Label>Preço</Label>
+          <Input type='number' {...register('price')} />
+          <ErrorMessage>{errors?.price?.message}</ErrorMessage>
+        </InputGroup>
 
-                {/**
+        {/**
                  * OnChange -> Chama a função sempre que houver uma alteração
                  * register('file').onChange(value) -> Validação do reactHookForm p/ saber qual o arquivo
                  */}
-                <InputGroup>
-                  <LabelUpload>
-                    <ImageIcon/>
-                    <input 
-                    type="file"
-                    {...register('file')}
-                    accept="image/png, image/jpeg"
-                    onChange={(value) => {
-                      setFileName(value.target.files[0]?.name)
-                      register('file').onChange(value)
-                    }}
-                    />
+        <InputGroup>
+          <LabelUpload>
+            <ImageIcon />
+            <input
+              type="file"
+              {...register('file')}
+              accept="image/png, image/jpeg"
+              onChange={(value) => {
+                setFileName(value.target.files[0]?.name)
+                register('file').onChange(value)
+              }}
+            />
 
-                    {fileName || "Upload do Produto"}
-                  </LabelUpload>
-                  <ErrorMessage>{errors?.file?.message}</ErrorMessage>
-                </InputGroup>
+            {fileName || "Upload do Produto"}
+          </LabelUpload>
+          <ErrorMessage>{errors?.file?.message}</ErrorMessage>
+        </InputGroup>
 
-                <InputGroup>
-                  <Label>Categoria</Label>
-                  <Controller
-                    name='category'
-                    control={control}
-                    render={ ({field}) => (
-                  <Select 
-                    {...field}
-                    options={categories}
-                    getOptionLabel={(category) => category.name}    
-                    getOptionValue={(category) => category.id}   
-                    placeholder="Categorias"
-                    menuPortalTarget={document.body}
-                  />
-                  )}/>
+        <InputGroup>
+          <Label>Categoria</Label>
+          <Controller
+            name='category'
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={categories}
+                getOptionLabel={(category) => category.name}
+                getOptionValue={(category) => category.id}
+                placeholder="Categorias"
+                menuPortalTarget={document.body}
+              />
+            )} />
 
-                  <ErrorMessage>{errors?.category?.message}</ErrorMessage>
-                </InputGroup>
+          <ErrorMessage>{errors?.category?.message}</ErrorMessage>
+        </InputGroup>
 
-                <InputGroup>
-                  <ContainerCheckbox>
-                    <input type="checkbox" 
-                    {...register('offer')}/>
-                    <Label>Produto em Oferta ?</Label>
-                  </ContainerCheckbox>
-                </InputGroup>
+        <InputGroup>
+          <ContainerCheckbox>
+            <input type="checkbox"
+              {...register('offer')} />
+            <Label>Produto em Oferta ?</Label>
+          </ContainerCheckbox>
+        </InputGroup>
 
-                <SubmitButton>Adicionar Produto</SubmitButton>
-             </Form>
-        </Container>
-    )
+        <SubmitButton>Adicionar Produto</SubmitButton>
+      </Form>
+    </Container>
+  )
 }

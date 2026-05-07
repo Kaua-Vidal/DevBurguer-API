@@ -15,6 +15,7 @@ import {
 } from './styles';
 import Logo from '../../assets/logo.png';
 import { Button } from '../../components/Button';
+import { IMaskInput } from 'react-imask';
 
 export function Register() {
   const navigate = useNavigate();
@@ -26,6 +27,10 @@ export function Register() {
         .string()
         .email('Digite um e-mail válido')
         .required('O e-mail é obrigatório'),
+      phone: yup
+        .string()
+        .required('O WhatsApp é obrigatório')
+        .min(10, 'Digite um número válido com DDD'),
       password: yup
         .string()
         .min(6, 'A senha deve ter pelo menos 6 caracteres')
@@ -34,38 +39,42 @@ export function Register() {
         .string()
         .oneOf([yup.ref('password')], 'As senhas devem ser iguais')
         .required('Confirme sua senha'),
-      
+
     })
     .required();
 
-    //Extraindo ferramentas do useForm (ReactHookForm)
+  //Extraindo ferramentas do useForm (ReactHookForm)
   const {
     register,                         //Função para conectar o campo do form ao reactHookForm
     handleSubmit,                     //Valida os dados do schema do yup
+    setValue,
     formState: { errors },            //Lança os erros definidos
   } = useForm({
     resolver: yupResolver(schema),    //Conecta o YUP ao hookForm, quando o usuario manda
-                                      //o Yup já valida
+    //o Yup já valida
   });
 
 
   const onSubmit = async (data) => {
 
     try {
-      const { status } = 
-      await api.post('/user', {
-        name: data.name,
-        email: data.email,
-        password: data.password,
-    }, {
-      validateStatus: () => true,
-    })
-  
+      const cleanPhone = `+55${data.phone.replace(/\D/g, '')}`
 
-    if (status === 200 || status === 201) {
-      setTimeout(() => {
-        navigate('/login')
-      }, 2000);
+      const { status } =
+        await api.post('/user', {
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          phone: cleanPhone,
+        }, {
+          validateStatus: () => true,
+        })
+
+
+      if (status === 200 || status === 201) {
+        setTimeout(() => {
+          navigate('/login')
+        }, 2000);
         toast.success('Conta criada com sucesso!')
       } else if (status === 400 || status === 409) {
         toast.error('Email já cadastrado! Faça o login para continuar')
@@ -76,7 +85,7 @@ export function Register() {
       toast.error('Falha no sistema! Tente novamente')
     }
 
-    
+
   };
 
 
@@ -102,6 +111,19 @@ export function Register() {
             <label htmlFor="">Email</label>
             <input type="email" {...register('email')} />
             <p>{errors?.email?.message}</p>
+          </InputContainer>
+
+          <InputContainer>
+            <label>Whatsapp (com DDD)</label>
+            <IMaskInput
+              mask="(00) 00000-0000"
+              placeholder='Ex: (00) 00000-0000'
+              onAccept={(value) => {
+                setValue('phone', value, { shouldValidate: true });
+              }}
+              {...register('phone')}>
+            </IMaskInput>
+            <p>{errors?.phone?.message}</p>
           </InputContainer>
 
           <InputContainer>

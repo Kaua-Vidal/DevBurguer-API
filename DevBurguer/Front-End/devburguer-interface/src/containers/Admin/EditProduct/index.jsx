@@ -53,36 +53,35 @@ export function EditProduct() {
     const productFormData = new FormData()
 
     //Com o FormData, o backend pode trocar a imagem antiga
-    productFormData.append('name', data.name)
-    productFormData.append('price', data.price)
-    productFormData.append('category_id', data.category.id)
-    productFormData.append('file', data.file[0])
-    productFormData.append('offer', data.offer)
-
-    const updateProduct = async () => {
-      await api.put(`/product/${product.id}`, {
-        name: data.name,
-        price: data.price,
-        category: data.category.id,
-        offer: data.offer
-      })
-
-      if(data.file && data.file.length > 0){
-        const imageFormData = new FormData()
-        imageFormData.append('file', data.file[0])
-        await api.post(`/product/uploads/${product.id}`, imageFormData)
-      }
+    const productData = {
+      name: data.name,
+      price: data.price,
+      categoryId: data.category.id,
+      offer: data.offer,
+      quantity: 0,
     }
 
-    await toast.promise( api.put(`/products/${product.id}`, productFormData), {
-      pending: 'Editando o produto...',
-      success: 'Produto editado com sucesso',
-      error: 'Falha ao editar o produto, tente novamente'
+    productFormData.append('product', JSON.stringify(productData));
+
+    if (data.file && data.file.length > 0) {
+        productFormData.append('file', data.file[0]);
+    }
+
+    try {
+      await toast.promise(api.put(`/products/${product.id}`, productFormData), {
+        pending: 'Editando o produto...',
+        success: 'Produto editado com sucesso',
+        error: 'Falha ao editar o produto, tente novamente'
     });
 
     setTimeout(() => {
-      navigate('/admin/produtos')
-    }, 2000)
+      navigate('/admin/produtos');
+    }, 2000);
+
+    } catch(err){
+      console.error("Erro na requisição PUT:", err);
+    }
+    
   }
 
     return (

@@ -1,4 +1,4 @@
-package com.stackburguer.api.service;
+package com.stackburguer.api.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Service
-public class S3Service {
+public class S3Util {
 
     private final S3Client s3Client;
 
@@ -21,7 +21,10 @@ public class S3Service {
     @Value("${aws.region}")
     private String region;
 
-    public S3Service(S3Client s3Client){
+    @Value("${url.s3.bucket}")
+    private String urlS3Bucket;
+
+    public S3Util(S3Client s3Client){
         this.s3Client = s3Client;
     }
 
@@ -38,7 +41,7 @@ public class S3Service {
             s3Client.putObject(putObjectRequest,
                     RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
-            return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, fileName);
+            return String.format(urlS3Bucket, bucketName, region, fileName);
         } catch(IOException e) {
             throw new RuntimeException("Erro ao processar o arquivo para upload", e);
         }

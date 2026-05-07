@@ -1,4 +1,4 @@
-package com.stackburguer.api.repositories.jpa;
+package com.stackburguer.api.repositories;
 
 import com.stackburguer.api.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;

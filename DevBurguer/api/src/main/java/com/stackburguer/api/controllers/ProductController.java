@@ -3,7 +3,7 @@ package com.stackburguer.api.controllers;
 
 import com.stackburguer.api.DTO.product.ProductResponseDTO;
 import com.stackburguer.api.service.ProductService;
-import com.stackburguer.api.service.S3Service;
+import com.stackburguer.api.utils.S3Util;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/products")  //todas minhas rotas começam com /products
@@ -24,10 +25,10 @@ public class ProductController {
     @Autowired
     private ProductService service;
 
-    private final S3Service s3Service;
+    private final S3Util s3Util;
 
-    public ProductController(S3Service s3Service){
-        this.s3Service = s3Service;
+    public ProductController(S3Util s3Util){
+        this.s3Util = s3Util;
     }
 
     @GetMapping
@@ -59,7 +60,7 @@ public class ProductController {
     }
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<ProductResponseDTO>> getByCategoryId(@PathVariable String categoryId){
+    public ResponseEntity<List<ProductResponseDTO>> getByCategoryId(@PathVariable UUID categoryId){
         List<ProductResponseDTO> products = service.getProductsByCategory(categoryId);
         return ResponseEntity.ok(products);
     }
@@ -78,8 +79,8 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> update(
             @PathVariable Long id,
-            @RequestParam("product") String productJson,
-            @RequestParam(value = "file", required = false) MultipartFile file
+            @RequestPart("product") String productJson,
+            @RequestPart(value = "file", required = false) MultipartFile file
     ) throws IOException {
             ProductResponseDTO response = service.updateProduct(id, productJson, file);
             return ResponseEntity.ok(response);
@@ -87,7 +88,7 @@ public class ProductController {
 
     @PostMapping("/uploads")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file){
-        String fileUrl = s3Service.uploadFile(file);
+        String fileUrl = s3Util.uploadFile(file);
         return ResponseEntity.ok(fileUrl);
     }
 

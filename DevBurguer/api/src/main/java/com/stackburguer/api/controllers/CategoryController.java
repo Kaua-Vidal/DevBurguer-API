@@ -48,10 +48,11 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.update(id, dto));
     }
 
-    @PostMapping("/categories/uploads/{id}")
-    public ResponseEntity<Category> uploadImage(@PathVariable String id, @RequestParam("file")MultipartFile file){
+    @PostMapping("/uploads/{id}")
+    public ResponseEntity<CategoryResponseDTO> uploadImage(@PathVariable String id, @RequestParam("file")MultipartFile file){
         Category updatedCategory = categoryService.uploadImage(id, file);
-        return ResponseEntity.ok(updatedCategory);
+        CategoryResponseDTO response = categoryService.mapToResponseDTO(updatedCategory);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")

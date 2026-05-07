@@ -41,7 +41,7 @@ export const RightContainer = styled.div`
 
     p {
         color: ${(props) => props.theme.white};
-        font-size: 18px;
+        font-size: 15px;
         font-weight: 800;
 
         a {
@@ -61,8 +61,8 @@ export const Title = styled.h2`
 export const Form = styled.form`
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 20px;
+    gap: 7px;
+    padding: 15px;
     width: 100%;
     max-width: 400px;
 `;

@@ -1,4 +1,4 @@
-package com.stackburguer.api.repositories.jpa;
+package com.stackburguer.api.repositories;
 
 import com.stackburguer.api.models.Category;
 import com.stackburguer.api.models.Product;

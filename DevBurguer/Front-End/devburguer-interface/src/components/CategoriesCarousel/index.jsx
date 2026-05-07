@@ -49,7 +49,7 @@ export function CategoriesCarousel() {
         itemClass="carousel-item"
       >
         {categories.map((category) => (
-          <ContainerItems key={category.id} imageUrl={category.path}>
+          <ContainerItems key={category.id} imageUrl={category.url}>
             <CategoryButton
             key={category.id}
             to={`/cardapio?categoria=${category.id}`}

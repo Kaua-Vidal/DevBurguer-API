@@ -6,6 +6,7 @@ public record UserResponseDTO (
         UUID id,
         String name,
         String email,
-        boolean admin
+        boolean admin,
+        String phone
 ) {
 }

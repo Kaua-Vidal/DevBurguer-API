@@ -1,6 +1,6 @@
 export const standardTheme = { 
 primaryRed: '#b70f0c', 
-darkRed: '#800400', 
+darkRed: '#d40700', 
 cheddarOrange: '#F77F00', 
 cheddarYellow: '#F7B801', 
 mainBlack: '#1f1f1f', 

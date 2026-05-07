@@ -11,7 +11,7 @@ public record CategoryResponseDTO (
 
     public CategoryResponseDTO(Category category){
         this(
-                category.getId(),
+                category.getId().toString(),
                 category.getName(),
                 category.getPath(),
                 category.getPath() != null ? "http://localhost:8080/category-file/" + category.getPath() : null

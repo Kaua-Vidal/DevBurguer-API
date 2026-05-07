@@ -29,15 +29,24 @@ export function Row({row, setOrders, orders}) {
     try {
       setLoading(true)
       //Faz um put em orders e manda o valor que será alterado
-      await api.put(`orders/${id}`, {status});
+      
+      await api.patch(`/orders/${id}`, {status});
+
+      console.log("Tentando atualizar o pedido:", id);
+      console.log("Lista atual de pedidos:", orders);
                                                                 //SpreadOperator
-      const newOrders = orders.map( (order) => order._id === id ? { ...order, status} : order)
+      const newOrders = orders.map( (order) => {
+        return order.id === id ? { ...order, status} : order})
                                                                 //Quando usa o ..., diz que quer manter todos os outros iguais
                                                                 //mas modificar apenar esse item que vem depois dele, nesse caso, o status
 
       setOrders(newOrders)
+
+      
+      console.log("Estado atualizado com sucesso!");
     } catch(err) {
-      console.error(err)
+      console.error("O Java barrou a atualização:", err.response?.data || err.message);
+    alert("Não foi possível atualizar no servidor, por isso a tela não mudou.");
     }
     finally{
       setLoading(false)

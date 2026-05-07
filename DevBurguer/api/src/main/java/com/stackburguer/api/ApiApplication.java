@@ -2,13 +2,14 @@ package com.stackburguer.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import com.stripe.Stripe;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "com.stackburguer.api.repositories.jpa")  //onde está o repo do Postgres
-@EnableMongoRepositories(basePackages = "com.stackburguer.api.repositories.mongo")    //Onde está o repo do Mongo
+@EnableJpaRepositories(basePackages = "com.stackburguer.api.repositories")  //onde está o repo do Postgres
+
+@EntityScan(basePackages = "com.stackburguer.api.models")
 public class ApiApplication {
 
 	public static void main(String[] args) {

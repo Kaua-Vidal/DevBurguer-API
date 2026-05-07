@@ -48,92 +48,79 @@ export function Login() {
   });
 
   const onSubmit = async (data) => {
-    const {
-      data: userData
-    } = await toast.promise(
-      api.post('/sessions', {
-        email: data.email,
-        password: data.password,
-      }),
-      {
-        pending: 'Verificando seus dados',
-        success: {
-          render() {
-            setTimeout(() => {
-              if(userData?.admin) {
-                navigate('/admin/pedidos');
-              } else {
-                navigate('/');
-              }
-              
-             
-            }, 2000);
-            return `Seja Bem-vindo(a)`;
-          },
+    try {
+      const response = await toast.promise(
+        api.post('/sessions', {
+          email: data.email,
+          password: data.password,
+        }),
+        {
+          pending: 'Verificando seus dados',
+          success: 'Seja Bem-vindo(a)!',
+          error: 'E-mail ou Senha incorretos',
         },
-        error: 'E-mail ou Senha incorretos',
-      },
-    );
+      );
 
 
-    putUserData(userData);
-  };
 
-  const handleSucces = (credentialResponse) => {
-    const userData = jwtDecode(credentialResponse.credential);
-    setUser(userData);
-    
-  }
+      const userData = response.data;
+      await putUserData(userData);
 
-  const handleError = () => {
-    toast.error("Não foi possível logar. Tente novamente!")
-  }
+      if (userData?.admin) {
+        navigate('/admin/pedidos');
+      } else {
+        navigate('/');
+      }
+    } catch (error) {
+      console.error("Erro no login:", error);
+    }
+  
+};
+
+const handleSucces = (credentialResponse) => {
+  const userData = jwtDecode(credentialResponse.credential);
+  setUser(userData);
+
+}
+
+const handleError = () => {
+  toast.error("Não foi possível logar. Tente novamente!")
+}
 
 
-  return (
-    <Container>
-      <LeftContainer>
-        <img src={Logo} alt="logo-devburguer" />
-      </LeftContainer>
+return (
+  <Container>
+    <LeftContainer>
+      <img src={Logo} alt="logo-devburguer" />
+    </LeftContainer>
 
-      <RightContainer>
-        <Title>
-          Olá, seja bem vindo ao <span>Stack Burguer!</span>
-          <br />
-          Acesse com seu
-          <span> Login e senha.</span>
-        </Title>
+    <RightContainer>
+      <Title>
+        Olá, seja bem vindo ao <span>Stack Burguer!</span>
+        <br />
+        Acesse com seu
+        <span> Login e senha.</span>
+      </Title>
 
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <InputContainer>
-            <label htmlFor="">Email</label>
-            <input type="email" {...register('email')} />
-            <p>{errors?.email?.message}</p>
-          </InputContainer>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <InputContainer>
+          <label htmlFor="">Email</label>
+          <input type="email" {...register('email')} />
+          <p>{errors?.email?.message}</p>
+        </InputContainer>
 
-          <InputContainer>
-            <label htmlFor="">Senha</label>
-            <input type="password" {...register('password')} />
-            <p>{errors?.password?.message}</p>
-          </InputContainer>
-          <Button type="submit">Entrar</Button>
-        </Form>
+        <InputContainer>
+          <label htmlFor="">Senha</label>
+          <input type="password" {...register('password')} />
+          <p>{errors?.password?.message}</p>
+        </InputContainer>
+        <Button type="submit">Entrar</Button>
+      </Form>
 
-        <GoogleButton>
-          <GoogleLogin
-            onSuccess={handleSucces}
-            onError={handleError}
-            size='large'
-            shape='rectangular'
-            text='continue_with'
-            width={350}/>
-            
-        </GoogleButton>
-
-        <p>
-          Não possui conta? <Link to="/cadastro">Clique aqui.</Link>
-        </p>
-      </RightContainer>
-    </Container>
-  );
+      <p>
+        Não possui conta? <Link to="/cadastro">Clique aqui.</Link>
+      </p>
+    </RightContainer>
+  </Container>
+);
 }

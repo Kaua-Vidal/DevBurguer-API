@@ -2,10 +2,13 @@ package com.stackburguer.api.service;
 
 import com.stackburguer.api.DTO.product.ProductRequestDTO;
 import com.stackburguer.api.DTO.product.ProductResponseDTO;
+import com.stackburguer.api.exceptions.CategoryNotFoundException;
+import com.stackburguer.api.exceptions.ProductNotFoundException;
 import com.stackburguer.api.models.Category;
 import com.stackburguer.api.models.Product;
-import com.stackburguer.api.repositories.jpa.ProductRepository;
-import com.stackburguer.api.repositories.jpa.CategoryRepository;
+import com.stackburguer.api.repositories.ProductRepository;
+import com.stackburguer.api.repositories.CategoryRepository;
+import com.stackburguer.api.utils.S3Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProductService {
@@ -28,10 +32,10 @@ public class ProductService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    private final S3Service s3Service;
+    private final S3Util s3Util;
 
-    public ProductService(S3Service s3Service){
-        this.s3Service = s3Service;
+    public ProductService(S3Util s3Util){
+        this.s3Util = s3Util;
     }
 
     public List<ProductResponseDTO> getAllProducts(){
@@ -73,11 +77,12 @@ public class ProductService {
         ProductRequestDTO requestDto = objectMapper.readValue(productJson, ProductRequestDTO.class);
 
         if(requestDto.price() <= 0){
-            throw new RuntimeException("O proço do produto deve ser maior que zero.");
+            throw new RuntimeException("O preço do produto deve ser maior que zero.");
         }
 
+
         Category category = categoryRepository.findById(requestDto.categoryId())
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada!"));
+                .orElseThrow(() -> new CategoryNotFoundException("Categoria não encontrada!"));
 
 
         Product product = new Product();
@@ -97,11 +102,11 @@ public class ProductService {
         return new ProductResponseDTO(product);
     }
 
-    public List<ProductResponseDTO> getProductsByCategory(String categoryId){
-        List<Product> products = productRepository.findByCategoryId(categoryId);
+    public List<ProductResponseDTO> getProductsByCategory(UUID categoryId){
+        List<Product> products = productRepository.findByCategoryId(categoryId.toString());
 
         if(!categoryRepository.existsById(categoryId)){
-            throw new RuntimeException("Categoria ID " + categoryId + " não encontrada.");
+            throw new CategoryNotFoundException("Categoria ID " + categoryId + " não encontrada.");
         }
 
         return products.stream()
@@ -111,7 +116,7 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+                .orElseThrow(() -> new ProductNotFoundException("Produto não encontrado"));
 
         String projectPath = System.getProperty("user.dir");
         String uploadDir = projectPath + File.separator + "src" + File.separator + "main" +
@@ -140,10 +145,11 @@ public class ProductService {
 
         //Pegamos o produto atual que está no banco
         Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+                .orElseThrow(() -> new ProductNotFoundException("Produto não encontrado"));
+
 
         Category category = categoryRepository.findById(dto.categoryId())
-                .orElseThrow(() -> new RuntimeException("A categoria informada não existe no banco"));
+                .orElseThrow(() -> new CategoryNotFoundException("A categoria informada não existe no banco"));
 
         //Atualização dos textos
         existingProduct.setName(dto.name());
@@ -155,22 +161,18 @@ public class ProductService {
 
 
         if(file != null && !file.isEmpty()) {
-            String projectPath = System.getProperty("user.dir");
-            String uploadDir = projectPath + File.separator + "src" + File.separator + "main" +
-                    File.separator + "resources" + File.separator + "static" +
-                    File.separator + "uploads" + File.separator;
+            Path uploadPath = Paths.get("uploads");
 
-            File oldFile = new File(uploadDir + existingProduct.getPath());
-            if (oldFile.exists()) {
-                oldFile.delete(); //Limpando a foto do HD caso mande a foto nova
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
             }
 
-            //Salvando a foto nova
-            String newFileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            file.transferTo(new File(uploadDir + newFileName));
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path filePath = uploadPath.resolve(fileName);
 
-            // Atualizando o caminho no objeto com o novo nome
-            existingProduct.setPath(newFileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            existingProduct.setPath(fileName);
         }
 
         Product updatedProduct = productRepository.save(existingProduct);
@@ -179,10 +181,10 @@ public class ProductService {
     }
 
     public String updateProductImage(Long productId, MultipartFile file){
-        String fileUrl = s3Service.uploadFile(file);
+        String fileUrl = s3Util.uploadFile(file);
 
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado com o ID: " + productId));
+                .orElseThrow(() -> new ProductNotFoundException("Produto não encontrado com o ID: " + productId));
 
         product.setPath(fileUrl);
 

@@ -33,7 +33,7 @@ public class OrderController {
 
         OrderResponseDTO response = orderService.createOrder(dto, user);
 
-        String paymentUrl = paymentService.createCheckoutSession(response);
+        String paymentUrl = paymentService.createPaymentIntent(response);
 
         OrderResponseDTO responseWithPayment = new OrderResponseDTO(
                 response.id(),

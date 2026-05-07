@@ -2,13 +2,17 @@ package com.stackburguer.api.service;
 
 import com.stackburguer.api.DTO.category.CategoryRequestDTO;
 import com.stackburguer.api.DTO.category.CategoryResponseDTO;
+import com.stackburguer.api.exceptions.CategoryNotFoundException;
 import com.stackburguer.api.models.Category;
-import com.stackburguer.api.repositories.jpa.CategoryRepository;
+import com.stackburguer.api.repositories.CategoryRepository;
+import com.stackburguer.api.utils.S3Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CategoryService {
@@ -17,14 +21,19 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 
     @Autowired
-    private S3Service s3Service;
+    private S3Util s3Util;
 
-    private CategoryResponseDTO mapToResponseDTO(Category category){
+    @Value("${url.s3.category}")
+    private String urlS3Category;
+
+    public CategoryResponseDTO mapToResponseDTO(Category category){
         String path = category.getPath();
 
-        String url = "http://localhost:8080/category-file/" + path;
+        String url = (path != null && path.startsWith("http"))
+                ? path
+                : urlS3Category + path;
 
-        return new CategoryResponseDTO(category.getId(), category.getName(), url, path);
+        return new CategoryResponseDTO(category.getId().toString(), category.getName(), url, path);
     }
 
     public List<CategoryResponseDTO> getAllCategories() {
@@ -42,26 +51,32 @@ public class CategoryService {
     }
 
     public Category uploadImage(String id, MultipartFile file){
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria não existe."));
+        UUID categoryId = UUID.fromString(id);
 
-        String fileName = s3Service.uploadFile(file);
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException("Categoria não existe."));
+
+        String fileName = s3Util.uploadFile(file);
 
         category.setPath(fileName);
         return categoryRepository.save(category);
     }
 
     public CategoryResponseDTO update(String id, CategoryRequestDTO dto){
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada."));
+        UUID categoryId = UUID.fromString(id);
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException("Categoria não encontrada."));
         category.setName(dto.name());
         return mapToResponseDTO(categoryRepository.save(category));
     }
 
     public void delete(String id) {
-        if (!categoryRepository.existsById(id)){
-            throw new RuntimeException("Categoria não encontrada.");
+        UUID categoryId = UUID.fromString(id);
+
+        if (!categoryRepository.existsById(categoryId)){
+            throw new CategoryNotFoundException("Categoria não encontrada.");
         }
-        categoryRepository.deleteById(id);
+        categoryRepository.deleteById(categoryId);
     }
 }

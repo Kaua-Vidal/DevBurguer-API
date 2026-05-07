@@ -1,18 +1,37 @@
 package com.stackburguer.api.models.order;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.stackburguer.api.models.User;
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
-@Document(collection = "orders")
+@Entity
+@Table(name = "orders")
 public class Order {
 
+    @Id
     private String id;
-    private UserSummary user;
+
+    //Utilizando o FetchType, diz ao banco para não carregar os dados inteiros
+    //do usuario a menos que seja estritamente necessário
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ElementCollection
+    @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
     private List<ProductItem> products;
+
     private String status = "Pedido realizado";
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    public Order(){
+        this.id = UUID.randomUUID().toString();
+    }
 
     public String getId() {
         return id;
@@ -22,11 +41,11 @@ public class Order {
         this.id = id;
     }
 
-    public UserSummary getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(UserSummary user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

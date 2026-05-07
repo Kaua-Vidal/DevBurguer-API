@@ -11,7 +11,7 @@ import { ApertureIcon } from '@phosphor-icons/react';
 
 export function CartResume() {
     const [finalPrice, setFinalPrice] = useState(0);
-    const [deliveryTax] = useState(500); //5R$
+    const [deliveryTax] = useState(5); //5R$
     const navigate = useNavigate();
 
     const { cartProducts, clearCart } = useCart();
@@ -36,7 +36,7 @@ export function CartResume() {
         })
         
         try {
-            const {data} = await api.post('create-payment-intent', {products});
+            const {data} = await api.post('/create-payment-intent', {products});
             navigate('/checkout', {
                 //O state serve para mandar info de uma rota para outra
                 state: data,

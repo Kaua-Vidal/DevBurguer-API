@@ -82,7 +82,7 @@ export const HomeButton = styled.button `
     align-items: center;
     position: relative;
     top: 0px;
-    right: 15%;
+    right: 10%;
     padding: 5px;
     background: none;
     border: none;

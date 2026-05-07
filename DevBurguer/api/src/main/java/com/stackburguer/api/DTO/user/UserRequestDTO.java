@@ -14,6 +14,8 @@ public record UserRequestDTO (
 
         @NotBlank(message = "Senha é obrigatória.")
         @Size(min = 6, message = "A senha deve ter pelo menos 6 caracteres.")
-        String password
+        String password,
+
+        String phone
 ) {
 }

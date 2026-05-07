@@ -3,7 +3,7 @@ package com.stackburguer.api.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
+@Data
 public class User implements UserDetails {
 
     @Id
@@ -30,6 +31,9 @@ public class User implements UserDetails {
 
     @NotBlank
     private String password;
+
+
+    private String phone;
 
     private boolean admin = false;
 
@@ -63,6 +67,8 @@ public class User implements UserDetails {
     public String getPassword() {
         return password;
     }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

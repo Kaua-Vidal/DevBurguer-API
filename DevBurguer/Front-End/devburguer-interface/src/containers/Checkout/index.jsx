@@ -6,7 +6,9 @@ import CheckoutForm from "../../components/Stripe/CheckoutForm";
 
 export function Checkout() {
     //O useLocation serve para receber as info que foram mandadas na tela anterior
-    const {state: {clientSecret}} = useLocation();
+    const {state} = useLocation();
+
+    const clientSecret = state?.clientSecret;
 
     if (!clientSecret) {
         return (<div>Erro, volte e tente novamente</div>)

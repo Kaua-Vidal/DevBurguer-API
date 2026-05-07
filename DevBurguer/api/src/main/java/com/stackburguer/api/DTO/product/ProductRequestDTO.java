@@ -1,10 +1,10 @@
 package com.stackburguer.api.DTO.product;
-
-import com.stackburguer.api.models.Category;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+
+import java.util.UUID;
 
 public record ProductRequestDTO (
         @NotBlank(message = "O nome do produto é obrigatório")
@@ -15,13 +15,13 @@ public record ProductRequestDTO (
         Double price,
 
         @NotBlank(message = "A categoria é obrigatória")
-        String categoryId,
+        UUID categoryId,
 
         @NotNull
         Long id,
 
         @Min(1)
-        int quantity,
+        Integer quantity,
 
         Boolean offer
 ) {
